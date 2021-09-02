@@ -536,6 +536,19 @@ sensor_msgs_generate_messages_eus/fast:
 .PHONY : sensor_msgs_generate_messages_eus/fast
 
 #=============================================================================
+# Target rules for targets named dynamic_object
+
+# Build rule for target.
+dynamic_object: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dynamic_object
+.PHONY : dynamic_object
+
+# fast build rule for target.
+dynamic_object/fast:
+	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/build
+.PHONY : dynamic_object/fast
+
+#=============================================================================
 # Target rules for targets named moving_check
 
 # Build rule for target.
@@ -1438,6 +1451,7 @@ help:
 	@echo "... topic_tools_generate_messages_nodejs"
 	@echo "... topic_tools_generate_messages_py"
 	@echo "... LK_OpticalFlow_v2"
+	@echo "... dynamic_object"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"

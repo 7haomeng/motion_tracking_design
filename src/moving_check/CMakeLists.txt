@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(moving_check)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -12,7 +12,13 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  image_transport
+  geometry_msgs
+  cv_bridge
 )
+
+find_package(OpenCV 3.3.1 REQUIRED)
+find_package(realsense2 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -127,7 +133,10 @@ include_directories(
 # )
 
 add_executable(moving_check src/moving_check.cpp)
-target_link_libraries(moving_check ${catkin_LIBRARIES})
+target_link_libraries(moving_check ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
+add_executable(dynamic_object src/dynamic_object.cpp)
+target_link_libraries(dynamic_object ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

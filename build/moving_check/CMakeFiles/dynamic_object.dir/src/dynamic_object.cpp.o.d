@@ -1,5 +1,5 @@
-moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.o: \
- /home/chinghaomeng/motion_tracking_design/src/moving_check/src/moving_check.cpp \
+moving_check/CMakeFiles/dynamic_object.dir/src/dynamic_object.cpp.o: \
+ /home/chinghaomeng/motion_tracking_design/src/moving_check/src/dynamic_object.cpp \
  /usr/include/stdc-predef.h /opt/ros/kinetic/include/ros/ros.h \
  /opt/ros/kinetic/include/ros/time.h \
  /opt/ros/kinetic/include/ros/platform.h /usr/include/stdlib.h \
@@ -1071,6 +1071,17 @@ moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.o: \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc.hpp \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc/imgproc_c.h \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/imgproc/types_c.h \
+ /opt/ros/kinetic/include/image_transport/image_transport.h \
+ /opt/ros/kinetic/include/image_transport/publisher.h \
+ /opt/ros/kinetic/include/image_transport/single_subscriber_publisher.h \
+ /opt/ros/kinetic/include/image_transport/exception.h \
+ /opt/ros/kinetic/include/image_transport/loader_fwds.h \
+ /opt/ros/kinetic/include/image_transport/subscriber.h \
+ /opt/ros/kinetic/include/image_transport/transport_hints.h \
+ /opt/ros/kinetic/include/image_transport/camera_publisher.h \
+ /opt/ros/kinetic/include/sensor_msgs/CameraInfo.h \
+ /opt/ros/kinetic/include/sensor_msgs/RegionOfInterest.h \
+ /opt/ros/kinetic/include/image_transport/camera_subscriber.h \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/opencv.hpp \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/calib3d.hpp \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/features2d.hpp \
@@ -1182,14 +1193,5 @@ moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.o: \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/viz/viz3d.hpp \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/viz/vizcore.hpp \
  /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv2/highgui/highgui.hpp \
- /opt/ros/kinetic/include/image_transport/image_transport.h \
- /opt/ros/kinetic/include/image_transport/publisher.h \
- /opt/ros/kinetic/include/image_transport/single_subscriber_publisher.h \
- /opt/ros/kinetic/include/image_transport/exception.h \
- /opt/ros/kinetic/include/image_transport/loader_fwds.h \
- /opt/ros/kinetic/include/image_transport/subscriber.h \
- /opt/ros/kinetic/include/image_transport/transport_hints.h \
- /opt/ros/kinetic/include/image_transport/camera_publisher.h \
- /opt/ros/kinetic/include/sensor_msgs/CameraInfo.h \
- /opt/ros/kinetic/include/sensor_msgs/RegionOfInterest.h \
- /opt/ros/kinetic/include/image_transport/camera_subscriber.h
+ /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv/cv.h \
+ /opt/ros/kinetic/include/opencv-3.3.1-dev/opencv/highgui.h

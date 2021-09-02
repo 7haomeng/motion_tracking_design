@@ -3,6 +3,7 @@
         "iostream": "cpp",
         "bitset": "cpp",
         "complex": "cpp",
-        "functional": "cpp"
+        "functional": "cpp",
+        "ostream": "cpp"
     }
 }

@@ -195,6 +195,7 @@ gtest/gtest/clean: gtest/gtest/CMakeFiles/gtest.dir/clean
 # Directory level rules for directory moving_check
 
 # Recursive "all" directory target.
+moving_check/all: moving_check/CMakeFiles/dynamic_object.dir/all
 moving_check/all: moving_check/CMakeFiles/moving_check.dir/all
 .PHONY : moving_check/all
 
@@ -207,6 +208,7 @@ moving_check/clean: moving_check/CMakeFiles/sensor_msgs_generate_messages_cpp.di
 moving_check/clean: moving_check/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/clean
 moving_check/clean: moving_check/CMakeFiles/geometry_msgs_generate_messages_py.dir/clean
 moving_check/clean: moving_check/CMakeFiles/sensor_msgs_generate_messages_eus.dir/clean
+moving_check/clean: moving_check/CMakeFiles/dynamic_object.dir/clean
 moving_check/clean: moving_check/CMakeFiles/moving_check.dir/clean
 moving_check/clean: moving_check/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/clean
 moving_check/clean: moving_check/CMakeFiles/sensor_msgs_generate_messages_py.dir/clean
@@ -382,7 +384,7 @@ CMakeFiles/doxygen.dir/clean:
 gtest/CMakeFiles/gmock_main.dir/all:
 	$(MAKE) $(MAKESILENT) -f gtest/CMakeFiles/gmock_main.dir/build.make gtest/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f gtest/CMakeFiles/gmock_main.dir/build.make gtest/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=6,7,8,9 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=8,9,10,11 "Built target gmock_main"
 .PHONY : gtest/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -408,7 +410,7 @@ gtest/CMakeFiles/gmock_main.dir/clean:
 gtest/CMakeFiles/gmock.dir/all:
 	$(MAKE) $(MAKESILENT) -f gtest/CMakeFiles/gmock.dir/build.make gtest/CMakeFiles/gmock.dir/depend
 	$(MAKE) $(MAKESILENT) -f gtest/CMakeFiles/gmock.dir/build.make gtest/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=3,4,5 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=5,6,7 "Built target gmock"
 .PHONY : gtest/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -434,7 +436,7 @@ gtest/CMakeFiles/gmock.dir/clean:
 gtest/gtest/CMakeFiles/gtest_main.dir/all: gtest/gtest/CMakeFiles/gtest.dir/all
 	$(MAKE) $(MAKESILENT) -f gtest/gtest/CMakeFiles/gtest_main.dir/build.make gtest/gtest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) $(MAKESILENT) -f gtest/gtest/CMakeFiles/gtest_main.dir/build.make gtest/gtest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=12,13 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=14,15 "Built target gtest_main"
 .PHONY : gtest/gtest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -460,7 +462,7 @@ gtest/gtest/CMakeFiles/gtest_main.dir/clean:
 gtest/gtest/CMakeFiles/gtest.dir/all:
 	$(MAKE) $(MAKESILENT) -f gtest/gtest/CMakeFiles/gtest.dir/build.make gtest/gtest/CMakeFiles/gtest.dir/depend
 	$(MAKE) $(MAKESILENT) -f gtest/gtest/CMakeFiles/gtest.dir/build.make gtest/gtest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=10,11 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=12,13 "Built target gtest"
 .PHONY : gtest/gtest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -974,13 +976,39 @@ moving_check/CMakeFiles/sensor_msgs_generate_messages_eus.dir/clean:
 .PHONY : moving_check/CMakeFiles/sensor_msgs_generate_messages_eus.dir/clean
 
 #=============================================================================
+# Target rules for target moving_check/CMakeFiles/dynamic_object.dir
+
+# All Build rule for target.
+moving_check/CMakeFiles/dynamic_object.dir/all:
+	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/depend
+	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=3,4 "Built target dynamic_object"
+.PHONY : moving_check/CMakeFiles/dynamic_object.dir/all
+
+# Build rule for subdir invocation for target.
+moving_check/CMakeFiles/dynamic_object.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/chinghaomeng/motion_tracking_design/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 moving_check/CMakeFiles/dynamic_object.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/chinghaomeng/motion_tracking_design/build/CMakeFiles 0
+.PHONY : moving_check/CMakeFiles/dynamic_object.dir/rule
+
+# Convenience name for target.
+dynamic_object: moving_check/CMakeFiles/dynamic_object.dir/rule
+.PHONY : dynamic_object
+
+# clean rule for target.
+moving_check/CMakeFiles/dynamic_object.dir/clean:
+	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/clean
+.PHONY : moving_check/CMakeFiles/dynamic_object.dir/clean
+
+#=============================================================================
 # Target rules for target moving_check/CMakeFiles/moving_check.dir
 
 # All Build rule for target.
 moving_check/CMakeFiles/moving_check.dir/all:
 	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/depend
 	$(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=14,15 "Built target moving_check"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=16,17 "Built target moving_check"
 .PHONY : moving_check/CMakeFiles/moving_check.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1162,7 +1190,7 @@ moving_check/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/clean:
 LKOpticalFlow/CMakeFiles/point_data.dir/all:
 	$(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/point_data.dir/build.make LKOpticalFlow/CMakeFiles/point_data.dir/depend
 	$(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/point_data.dir/build.make LKOpticalFlow/CMakeFiles/point_data.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=16,17 "Built target point_data"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/chinghaomeng/motion_tracking_design/build/CMakeFiles --progress-num=18,19 "Built target point_data"
 .PHONY : LKOpticalFlow/CMakeFiles/point_data.dir/all
 
 # Build rule for subdir invocation for target.

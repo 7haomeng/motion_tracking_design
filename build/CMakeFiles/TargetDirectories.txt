@@ -60,6 +60,7 @@
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/geometry_msgs_generate_messages_py.dir
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/sensor_msgs_generate_messages_eus.dir
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/edit_cache.dir
+/home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/dynamic_object.dir
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/moving_check.dir
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir
 /home/chinghaomeng/motion_tracking_design/build/moving_check/CMakeFiles/sensor_msgs_generate_messages_py.dir

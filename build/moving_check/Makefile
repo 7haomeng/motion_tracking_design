@@ -228,6 +228,20 @@ sensor_msgs_generate_messages_eus/fast:
 .PHONY : sensor_msgs_generate_messages_eus/fast
 
 # Convenience name for target.
+moving_check/CMakeFiles/dynamic_object.dir/rule:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 moving_check/CMakeFiles/dynamic_object.dir/rule
+.PHONY : moving_check/CMakeFiles/dynamic_object.dir/rule
+
+# Convenience name for target.
+dynamic_object: moving_check/CMakeFiles/dynamic_object.dir/rule
+.PHONY : dynamic_object
+
+# fast build rule for target.
+dynamic_object/fast:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/build
+.PHONY : dynamic_object/fast
+
+# Convenience name for target.
 moving_check/CMakeFiles/moving_check.dir/rule:
 	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 moving_check/CMakeFiles/moving_check.dir/rule
 .PHONY : moving_check/CMakeFiles/moving_check.dir/rule
@@ -325,6 +339,30 @@ geometry_msgs_generate_messages_nodejs/fast:
 	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build.make moving_check/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build
 .PHONY : geometry_msgs_generate_messages_nodejs/fast
 
+src/dynamic_object.o: src/dynamic_object.cpp.o
+.PHONY : src/dynamic_object.o
+
+# target to build an object file
+src/dynamic_object.cpp.o:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/src/dynamic_object.cpp.o
+.PHONY : src/dynamic_object.cpp.o
+
+src/dynamic_object.i: src/dynamic_object.cpp.i
+.PHONY : src/dynamic_object.i
+
+# target to preprocess a source file
+src/dynamic_object.cpp.i:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/src/dynamic_object.cpp.i
+.PHONY : src/dynamic_object.cpp.i
+
+src/dynamic_object.s: src/dynamic_object.cpp.s
+.PHONY : src/dynamic_object.s
+
+# target to generate assembly for a file
+src/dynamic_object.cpp.s:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f moving_check/CMakeFiles/dynamic_object.dir/build.make moving_check/CMakeFiles/dynamic_object.dir/src/dynamic_object.cpp.s
+.PHONY : src/dynamic_object.cpp.s
+
 src/moving_check.o: src/moving_check.cpp.o
 .PHONY : src/moving_check.o
 
@@ -372,7 +410,11 @@ help:
 	@echo "... sensor_msgs_generate_messages_lisp"
 	@echo "... sensor_msgs_generate_messages_nodejs"
 	@echo "... sensor_msgs_generate_messages_py"
+	@echo "... dynamic_object"
 	@echo "... moving_check"
+	@echo "... src/dynamic_object.o"
+	@echo "... src/dynamic_object.i"
+	@echo "... src/dynamic_object.s"
 	@echo "... src/moving_check.o"
 	@echo "... src/moving_check.i"
 	@echo "... src/moving_check.s"
