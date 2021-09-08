@@ -171,6 +171,7 @@ class Prediction:
             classMap_numpy_color = np.zeros((img.shape[1], img.shape[2], img.shape[0]), dtype=np.uint8)
             for idx in range(len(self.pallete)):
                 [r, g, b] = self.pallete[idx]
+                # print(classMap_numpy);
                 print("classMap_numpy: {0}, shape: {1}, size: {2}".format(np.unique(classMap_numpy), classMap_numpy.shape, classMap_numpy.size))
                 classMap_numpy_color[classMap_numpy == idx] = [b, g, r]
                 print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))

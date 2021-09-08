@@ -127,9 +127,9 @@ void Dynamic_Object::Tracking(Mat &frame){
             moving_arr = (CvArr*)&moving_tmp;
 
             double a = abs(cvGet2D(prev_arr, j, i).val[0]-cvGet2D(arr, j, i).val[0]);
-            printf("prev_arr(B,G,R): (%f, %f, %f)\n", cvGet2D(prev_arr, j, i).val[0], cvGet2D(prev_arr, j, i).val[1], cvGet2D(prev_arr, j, i).val[2]);
-            printf("arr(B,G,R): (%f, %f, %f)\n", cvGet2D(arr, j, i).val[0], cvGet2D(arr, j, i).val[1], cvGet2D(arr, j, i).val[2]);
-            printf("Pixel Value: %f\n\n", a);
+            // printf("prev_arr(B,G,R): (%f, %f, %f)\n", cvGet2D(prev_arr, j, i).val[0], cvGet2D(prev_arr, j, i).val[1], cvGet2D(prev_arr, j, i).val[2]);
+            // printf("arr(B,G,R): (%f, %f, %f)\n", cvGet2D(arr, j, i).val[0], cvGet2D(arr, j, i).val[1], cvGet2D(arr, j, i).val[2]);
+            // printf("Pixel Value: %f\n\n", a);
             CvScalar b = cvScalar(a, 0, 0,0);
             cvSet2D(moving_arr, j, i,b);
 
