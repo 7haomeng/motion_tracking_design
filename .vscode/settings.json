@@ -4,6 +4,8 @@
         "bitset": "cpp",
         "complex": "cpp",
         "functional": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "array": "cpp",
+        "string": "cpp"
     }
 }

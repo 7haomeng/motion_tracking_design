@@ -17,7 +17,10 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   pcl_conversions
   pcl_ros
+  message_filters
 )
+
+find_package(Boost REQUIRED)
 
 find_package(OpenCV 3.3.1 REQUIRED)
 find_package(realsense2 REQUIRED)
@@ -136,6 +139,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -160,7 +164,7 @@ include_directories(
 #target_link_libraries(LK_OpticalFlow ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY} ${PCL_LIBRARIES})
 
 add_executable(LK_OpticalFlow_v2 src/LK_OpticalFlow_v2.cpp)
-target_link_libraries(LK_OpticalFlow_v2 ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY} ${PCL_LIBRARIES})
+target_link_libraries(LK_OpticalFlow_v2 ${catkin_LIBRARIES} ${Boost_SYSTEM_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY} ${PCL_LIBRARIES})
 
 add_executable(point_data src/point_data.cpp)
 target_link_libraries(point_data ${catkin_LIBRARIES})

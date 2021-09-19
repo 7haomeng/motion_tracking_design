@@ -22,7 +22,7 @@ using namespace cv;
 
 class Dynamic_Object{
     private:
-    int i,j;
+    int i,j,k;
     int dx, dy;
     int p = 0;
     int rows, cols;
@@ -45,10 +45,14 @@ class Dynamic_Object{
     IplImage prev_tmp;
     IplImage tmp;
     IplImage moving_tmp;
+    IplImage pyrA_tmp;
+    IplImage pyrB_tmp;
 
     CvArr* prev_arr;
     CvArr* arr;
     CvArr* moving_arr;
+    CvArr* pyrA_arr;
+    CvArr* pyrB_arr;
 
     CvPoint2D32f * move_old_point = new CvPoint2D32f[ MAX_CORNERS];
     CvPoint2D32f * move_new_point = new CvPoint2D32f[ MAX_CORNERS];
@@ -79,8 +83,9 @@ Dynamic_Object::Dynamic_Object(ros::NodeHandle nh)
 }
 
 void Dynamic_Object::dynamic_object_Callback(const sensor_msgs::ImageConstPtr& image_msg){
-    // CvTermCriteria criteria;
-    // criteria = cvTermCriteria (CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 64, 0.01);
+
+    CvTermCriteria criteria;
+    criteria = cvTermCriteria (CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 64, 0.01);
     cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
     frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
 
@@ -133,17 +138,45 @@ void Dynamic_Object::Tracking(Mat &frame){
             CvScalar b = cvScalar(a, 0, 0,0);
             cvSet2D(moving_arr, j, i,b);
 
-            // if (a>40)
-            // {
-            //     if (p<MAX_CORNERS-1)
-            //     {
-            //         int d = ++p;
-            //         move_old_point[d].x = i;
-            //         move_old_point[d].y = j;
-            //     }
-            // }
+            if (a>40)
+            {
+                if (p<MAX_CORNERS-1)
+                {
+                    int d = ++p;
+                    move_old_point[d].x = i;
+                    move_old_point[d].y = j;
+                }
+            }
         }
     }
+
+    CvSize Pyrsize = cvSize(gray_prev.cols + 8, gray_prev.rows/3);
+    Mat pyrA(480, 640, CV_32FC1, Scalar(0,0,0));
+    pyrA_tmp = IplImage(pyrA);
+    pyrA_arr = (CvArr*)&pyrA_tmp;
+
+    Mat pyrB(480, 640, CV_32FC1, Scalar(0,0,0));
+    pyrB_tmp = IplImage(pyrB);
+    pyrB_arr = (CvArr*)&pyrB_tmp;
+
+    cvCalcOpticalFlowPyrLK(prev_arr, arr, pyrA_arr, pyrB_arr, move_old_point, move_new_point, MAX_CORNERS, cvSize(10,10), 3, features_found, features_error, criteria, 0);
+    cout << "calculate optical flow" << endl;
+    // calcOpticalFlowPyrLK(gray_prev, gray, points[0], points[1], status, err);
+
+    for(k = 0; k < MAX_CORNERS; k++){
+        int x1 = (int)move_new_point[i].x;
+        int x2 = (int)move_old_point[i].x;
+        int y1 = (int)move_new_point[i].y;
+        int y2 = (int)move_old_point[i].y;
+        cout << "x1: " << x1 << " x2: " << x2 <<  " y1: " << y1 << " y2: " << y2 << endl;
+
+        dx = (int)abs(x1 - x2);
+        dy = (int)abs(y1 - y2);
+        // if (dx >= 5 && dy >= 5){
+            cvLine(moving_arr, cvPoint(x2,y2), cvPoint(x1,y1), CV_RGB(255,0,0), 3, CV_AA, 0);
+        // }
+    }
+
     swap(gray_prev, gray);
     // cout << cvarrToMat(moving_arr).size() << endl;
     // imshow(window_name, cvarrToMat(moving_arr));

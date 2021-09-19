@@ -19,6 +19,9 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 
+#include <message_filters/subscriber.h>
+#include <message_filters/time_synchronizer.h>
+
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -28,6 +31,7 @@
 // #include <sensor_msgs/image_encodings.h>
 using namespace ros;
 using namespace std;
+using namespace message_filters;
 using namespace cv;
 // using namespace pcl;
 
@@ -48,6 +52,7 @@ private:
     ros::NodeHandle my_nh;
 
     cv::Mat frame;
+    cv::Mat mask_frame;
     Mat result;
     Mat gray;   // 當前圖片
     Mat gray_prev;  // 預測圖片
@@ -63,6 +68,8 @@ private:
     vector<float> err;
 
     // clock_t t1, t2, delta_time;
+    int i, j;
+    int rows, cols, channels;
     int count = 0;
     double deltaDist;
 
@@ -79,10 +86,15 @@ private:
     double end_time;
     double delta_time;
 
+    uchar* mask_data;
+    int mask_index;
+    int mask_label;
+
     geometry_msgs::Vector3 feature_points_msg;
     sensor_msgs::PointCloud2 originPointCloudtoROSMsg;
     sensor_msgs::PointCloud2 targetPointCloudtoROSMsg;
 	sensor_msgs::ImagePtr output_image;
+    sensor_msgs::ImagePtr output_tstimage;
 	std_msgs::Float64MultiArray origin_point;
 	std_msgs::Float64MultiArray target_point;
 	std_msgs::Float64MultiArray point_data;
@@ -97,6 +109,7 @@ private:
 
 public:
     LK_OpticalFlow(ros::NodeHandle);
+    void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
     void image_raw_Callback(const sensor_msgs::ImageConstPtr&);
     void Tracking(Mat &, Mat &);
     bool AddNewPoints();
@@ -112,13 +125,28 @@ public:
 	ros::Publisher point_data_pub;
 	ros::Publisher distance_data_pub;
 	ros::Publisher vel_data_pub;
-	image_transport::Publisher output_image_pub;
+    ros::Publisher output_image_pub;
+    ros::Publisher output_tstimg_pub;
+    ros::Subscriber mask_img_sub;
+
+    // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub;
+    // message_filters::Subscriber<sensor_msgs::Image> maskImage_sub;
+
+    // image_transport::Subscriber mask_img_sub;
+	// image_transport::Publisher output_image_pub;
     // ros::Publisher test_image_pub;
 };
 
 LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 {
-    image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    image_transport::ImageTransport it(nh);
+    // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    image_raw_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &LK_OpticalFlow::mask_img_Callback,this);
+    // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub(nh, "/ESPNet_v2/predict_img", 1);
+    // message_filters::Subscriber<sensor_msgs::Image> maskImage_sub(nh, "/ESPNet_v2/mask_img", 1);
+    // message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image> sync(predictImage_sub, maskImage_sub, 10);
+    // sync.registerCallback(boost::bind(&LK_OpticalFlow::image_raw_Callback, this, _1, _2));
     // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
     feature_points_pub = nh.advertise<geometry_msgs::Vector3>("lk/feature_points", 1);
     // feature_points_pub = nh.advertise<geometry_msgs::Point32>("feature_points", 10);
@@ -130,8 +158,10 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 	distance_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/distance_data", 1);
 	vel_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/vel_data", 1);
 
-	image_transport::ImageTransport it(nh);
-	output_image_pub = it.advertise("lk/camera/LK_OpticalFlow_image", 1);
+	// output_image_pub = it.advertise("lk/camera/LK_OpticalFlow_image", 1);
+    // output_image_pub = it.advertise("moving_check/camera/semantic_opticalflow_image", 1);
+    output_image_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/semantic_opticalflow_image", 1);
+    output_tstimg_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/mask_test_image", 1);
 
     //cv::namedWindow(window_name);
 	const int width = 640; // 設定影像尺寸(寬w，高h)
@@ -143,13 +173,51 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
     targetcloudptr_to_ROSMsg = TargetPointCloudXYZRGBtoROSMsgPtr(new TargetPointCloudXYZRGBtoROSMsg);    
 }
 
+void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_msg){
+    mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
+
+    // if(!mask_frame.empty()){
+    //     cout << "mask_frame" << endl;
+    // }
+    cv::Mat dstImage(mask_frame.rows, mask_frame.cols, CV_8UC1, cv::Scalar::all(0));
+    dstImage = mask_frame.clone();
+    // cout << frame << endl;
+    // cout << "**********************************************************" << endl;
+    // cout << "Size:" << frame.size() << " " << "Column: " << frame.cols << " " << "Row: " << frame.rows << endl;
+
+    cols = mask_frame.cols;
+    rows = mask_frame.rows;
+    channels = mask_frame.channels();
+
+    // cout << "Mask_img: " << endl;
+    for (i = 0; i <rows; i++){
+        mask_data = mask_frame.ptr<uchar>(i);
+        for(j = 0; j < cols * mask_frame.channels(); j++){
+            mask_index = 640 * i + j;
+            mask_label = int(mask_data[j]);
+            // cout << "mask_label: " << mask_label << endl;
+            if(mask_label == 1){
+                // cout << "000" << endl;
+                dstImage.at<uchar>(i, j) = 255;
+                cout << "Index: " << mask_index << endl;
+            }
+            // cout << int( mask_data[j] );
+        }
+        // cout << " " << endl;
+    }
+
+    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC1", dstImage).toImageMsg();
+	output_tstimg_pub.publish(output_tstimage);
+}
+
 void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg)
 {
 
     //t1 = clock()*0.001;
-
+    // cout << "ok" << endl;
     cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
     frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
+    // mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
 
     // TODO: wait for pointcloud2 topic
     boost::shared_ptr<sensor_msgs::PointCloud2 const> tmp_ptr;
@@ -165,6 +233,10 @@ void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_
     
 
     // test_image_pub.publish(cv_ptr->toImageMsg());
+
+    // if(!mask_frame.empty()){
+    //     cout << "mask_frame" << endl;
+    // }
 
     if(!frame.empty())
     {
