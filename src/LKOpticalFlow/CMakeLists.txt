@@ -169,6 +169,9 @@ target_link_libraries(LK_OpticalFlow_v2 ${catkin_LIBRARIES} ${Boost_SYSTEM_LIBRA
 add_executable(point_data src/point_data.cpp)
 target_link_libraries(point_data ${catkin_LIBRARIES})
 
+add_executable(rgb_pixelValue src/rgb_pixelValue.cpp)
+target_link_libraries(rgb_pixelValue ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+
 
 #add_executable(d435_pcl src/d435_pcl.cpp)
 #target_link_libraries(d435_pcl ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY} ${PCL_LIBRARIES})

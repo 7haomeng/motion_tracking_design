@@ -172,6 +172,20 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/rule:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/rule
+.PHONY : LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/rule
+
+# Convenience name for target.
+rgb_pixelValue: LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/rule
+.PHONY : rgb_pixelValue
+
+# fast build rule for target.
+rgb_pixelValue/fast:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build
+.PHONY : rgb_pixelValue/fast
+
+# Convenience name for target.
 LKOpticalFlow/CMakeFiles/point_data.dir/rule:
 	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 LKOpticalFlow/CMakeFiles/point_data.dir/rule
 .PHONY : LKOpticalFlow/CMakeFiles/point_data.dir/rule
@@ -989,6 +1003,30 @@ src/point_data.cpp.s:
 	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/point_data.dir/build.make LKOpticalFlow/CMakeFiles/point_data.dir/src/point_data.cpp.s
 .PHONY : src/point_data.cpp.s
 
+src/rgb_pixelValue.o: src/rgb_pixelValue.cpp.o
+.PHONY : src/rgb_pixelValue.o
+
+# target to build an object file
+src/rgb_pixelValue.cpp.o:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/src/rgb_pixelValue.cpp.o
+.PHONY : src/rgb_pixelValue.cpp.o
+
+src/rgb_pixelValue.i: src/rgb_pixelValue.cpp.i
+.PHONY : src/rgb_pixelValue.i
+
+# target to preprocess a source file
+src/rgb_pixelValue.cpp.i:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/src/rgb_pixelValue.cpp.i
+.PHONY : src/rgb_pixelValue.cpp.i
+
+src/rgb_pixelValue.s: src/rgb_pixelValue.cpp.s
+.PHONY : src/rgb_pixelValue.s
+
+# target to generate assembly for a file
+src/rgb_pixelValue.cpp.s:
+	cd /home/chinghaomeng/motion_tracking_design/build && $(MAKE) $(MAKESILENT) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/src/rgb_pixelValue.cpp.s
+.PHONY : src/rgb_pixelValue.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1057,12 +1095,16 @@ help:
 	@echo "... topic_tools_generate_messages_py"
 	@echo "... LK_OpticalFlow_v2"
 	@echo "... point_data"
+	@echo "... rgb_pixelValue"
 	@echo "... src/LK_OpticalFlow_v2.o"
 	@echo "... src/LK_OpticalFlow_v2.i"
 	@echo "... src/LK_OpticalFlow_v2.s"
 	@echo "... src/point_data.o"
 	@echo "... src/point_data.i"
 	@echo "... src/point_data.s"
+	@echo "... src/rgb_pixelValue.o"
+	@echo "... src/rgb_pixelValue.i"
+	@echo "... src/rgb_pixelValue.s"
 .PHONY : help
 
 

@@ -56,6 +56,7 @@ private:
     Mat result;
     Mat gray;   // 當前圖片
     Mat gray_prev;  // 預測圖片
+
     cv_bridge::CvImagePtr cv_ptr; 
     string window_name = "Lucas–Kanade Optical Flow Tracking";
     vector<Point2f> points[2];  // point0為特徵點的原来位置，point1為特徵點的新位置
@@ -68,8 +69,9 @@ private:
     vector<float> err;
 
     // clock_t t1, t2, delta_time;
-    int i, j;
+    int i, j, r, c;
     int rows, cols, channels;
+    int rgb_rows, rgb_cols, rgb_channels;
     int count = 0;
     double deltaDist;
 
@@ -89,6 +91,8 @@ private:
     uchar* mask_data;
     int mask_index;
     int mask_label;
+    int tmp_index;
+    int rgb_index;
 
     geometry_msgs::Vector3 feature_points_msg;
     sensor_msgs::PointCloud2 originPointCloudtoROSMsg;
@@ -140,8 +144,8 @@ public:
 LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 {
     image_transport::ImageTransport it(nh);
-    // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
-    image_raw_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    // image_raw_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &LK_OpticalFlow::image_raw_Callback,this);
     mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &LK_OpticalFlow::mask_img_Callback,this);
     // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub(nh, "/ESPNet_v2/predict_img", 1);
     // message_filters::Subscriber<sensor_msgs::Image> maskImage_sub(nh, "/ESPNet_v2/mask_img", 1);
@@ -195,11 +199,12 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
         for(j = 0; j < cols * mask_frame.channels(); j++){
             mask_index = 640 * i + j;
             mask_label = int(mask_data[j]);
-            // cout << "mask_label: " << mask_label << endl;
+            // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
             if(mask_label == 1){
                 // cout << "000" << endl;
                 dstImage.at<uchar>(i, j) = 255;
-                cout << "Index: " << mask_index << endl;
+                // cout << "Index: " << mask_index << endl;
+                tmp_index = mask_index;
             }
             // cout << int( mask_data[j] );
         }
@@ -210,14 +215,33 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
 	output_tstimg_pub.publish(output_tstimage);
 }
 
-void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg)
-{
+void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
 
     //t1 = clock()*0.001;
     // cout << "ok" << endl;
     cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
     frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
     // mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
+
+    cv::Mat rgb_dstImage(frame.rows, frame.cols, CV_8UC3, cv::Scalar::all(0));
+    rgb_dstImage = frame.clone();
+    
+    rgb_cols = frame.cols;
+    rgb_rows = frame.rows;
+    rgb_channels = frame.channels();
+    // cout << "rgb_dstImage: " << rgb_dstImage << endl;
+    // cout << "size: " << rgb_dstImage.size() << endl;
+    // cout << "channel: " << rgb_channels << endl;
+    for (r = 0; r < rgb_rows; r++){
+        for (c = 0; c < rgb_cols; c++){
+            int rgb_index = 640 * r + c;
+            if (rgb_index == tmp_index){
+                cout << "Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
+            }
+        }
+    }
+    cout << "**********************************************" << endl;
+
 
     // TODO: wait for pointcloud2 topic
     boost::shared_ptr<sensor_msgs::PointCloud2 const> tmp_ptr;
@@ -411,7 +435,7 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
 			x_op_target = cloud_ptr->points[target_index].x;
 			y_op_target = cloud_ptr->points[target_index].y;
 			z_op_target = cloud_ptr->points[target_index].z;
-			ROS_INFO("\033[1;32mOptical Flow points : [ %lf %lf %lf %lf %lf %lf ]\033[0m",x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target);
+			// ROS_INFO("\033[1;32mOptical Flow points : [ %lf %lf %lf %lf %lf %lf ]\033[0m",x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target);
 			point_data.data.push_back(cloud_ptr->points[initial_index].x);
 			point_data.data.push_back(cloud_ptr->points[initial_index].y);
 			point_data.data.push_back(cloud_ptr->points[initial_index].z);
@@ -421,12 +445,12 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
 			point_data_pub.publish(point_data);
 			point_data.data.clear();
 			
-			ROS_INFO("\033[1;31mDistance : [ %lf m ]\033[0m",ComputeDistance(x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target));
+			// ROS_INFO("\033[1;31mDistance : [ %lf m ]\033[0m",ComputeDistance(x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target));
 			distance_data.data.push_back(distance);
 			distance_data_pub.publish(distance_data);
 			distance_data.data.clear();
 
-			ROS_INFO("\033[1;33mcmd_vel : [ %lf m/s ]\n\033[0m",ComputeVelocity(distance, delta_time));
+			// ROS_INFO("\033[1;33mcmd_vel : [ %lf m/s ]\n\033[0m",ComputeVelocity(distance, delta_time));
 			vel_data.data.push_back(vel);
 			vel_data_pub.publish(vel_data);
 			vel_data.data.clear();
