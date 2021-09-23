@@ -50,9 +50,11 @@ class LK_OpticalFlow
 {
 private:
     ros::NodeHandle my_nh;
+    ros::NodeHandle rgb_nh;
 
     cv::Mat frame;
     cv::Mat mask_frame;
+    cv::Mat rgb_ptr_frame;
     Mat result;
     Mat gray;   // 當前圖片
     Mat gray_prev;  // 預測圖片
@@ -172,6 +174,7 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 	const int high = 480;
 
     my_nh = nh;
+    rgb_nh = nh;
     cloud_ptr = PointCloudXYZRGBPtr(new PointCloudXYZRGB);
     origincloudptr_to_ROSMsg = OriginPointCloudXYZRGBtoROSMsgPtr(new OriginPointCloudXYZRGBtoROSMsg);
     targetcloudptr_to_ROSMsg = TargetPointCloudXYZRGBtoROSMsgPtr(new TargetPointCloudXYZRGBtoROSMsg);    
@@ -183,11 +186,19 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     // if(!mask_frame.empty()){
     //     cout << "mask_frame" << endl;
     // }
-    cv::Mat dstImage(mask_frame.rows, mask_frame.cols, CV_8UC1, cv::Scalar::all(0));
-    dstImage = mask_frame.clone();
+    // cv::Mat dstImage(mask_frame.rows, mask_frame.cols, CV_8UC3, cv::Scalar::all(0));
+    // dstImage = mask_frame.clone();
     // cout << frame << endl;
     // cout << "**********************************************************" << endl;
     // cout << "Size:" << frame.size() << " " << "Column: " << frame.cols << " " << "Row: " << frame.rows << endl;
+
+    boost::shared_ptr<sensor_msgs::Image const> rgb_ptr;
+    rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/camera/color/image_raw",rgb_nh);
+    rgb_ptr_frame = cv_bridge::toCvCopy(rgb_ptr, "bgr8")->image;
+    cv::Mat dstImage(rgb_ptr_frame.rows, rgb_ptr_frame.cols, CV_8UC3, cv::Scalar::all(0));
+    // dstImage = rgb_ptr_frame.clone();
+
+    // cout << "dstImage: " << dstImage << endl;
 
     cols = mask_frame.cols;
     rows = mask_frame.rows;
@@ -201,18 +212,29 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
             mask_label = int(mask_data[j]);
             // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
             if(mask_label == 1){
-                // cout << "000" << endl;
-                dstImage.at<uchar>(i, j) = 255;
-                // cout << "Index: " << mask_index << endl;
-                tmp_index = mask_index;
+                cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
+                // Vec3b rgb_pixel = rgb_ptr_frame.at<Vec3b>(i,j);
+                // Vec3b dstImage_pixel = dstImage.at<Vec3b>(i,j);
+                // dstImage_pixel[0] = rgb_pixel[0];
+                // dstImage_pixel[1] = rgb_pixel[1];
+                // dstImage_pixel[2] = rgb_pixel[2];
+                dstImage.at<Vec3b>(i, j) = rgb_ptr_frame.at<Vec3b>(i,j);
+                // dstImage.at<uchar>(i, j) = 255;
+                // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
+                // tmp_index = mask_index;
+                // cout << "tmp_Index: " << tmp_index << endl;
             }
-            // cout << int( mask_data[j] );
         }
-        // cout << " " << endl;
     }
+    cout << "dstImage: " << dstImage << endl;
+    cout << "**********************************************" << endl;
 
-    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC1", dstImage).toImageMsg();
+    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", dstImage).toImageMsg();
 	output_tstimg_pub.publish(output_tstimage);
+
+    if(!dstImage.empty()){
+        Tracking(dstImage, result);
+    }
 }
 
 void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
@@ -232,15 +254,21 @@ void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_
     // cout << "rgb_dstImage: " << rgb_dstImage << endl;
     // cout << "size: " << rgb_dstImage.size() << endl;
     // cout << "channel: " << rgb_channels << endl;
-    for (r = 0; r < rgb_rows; r++){
-        for (c = 0; c < rgb_cols; c++){
-            int rgb_index = 640 * r + c;
-            if (rgb_index == tmp_index){
-                cout << "Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
-            }
-        }
-    }
-    cout << "**********************************************" << endl;
+    // cout << "rgb_tmp_Index: " << tmp_index << endl;
+    // for (r = 0; r < rgb_rows; r++){
+    //     for (c = 0; c < rgb_cols; c++){
+    //         int rgb_index = 640 * r + c;
+    //         if (rgb_index == tmp_index){
+                // Vec3b rgb_pixel = frame.at<Vec3b>(r,c);
+                // cout << "rgb_Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
+                // rgb_dstImage.at<Vec3b>(r, c) = frame.at<Vec3b>(r,c);
+    //         }
+    //     }
+    // }
+    // cout << "**********************************************" << endl;
+
+    // output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", rgb_dstImage).toImageMsg();
+	// output_tstimg_pub.publish(output_tstimage);
 
 
     // TODO: wait for pointcloud2 topic
@@ -267,7 +295,7 @@ void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_
         begin_time =ros::Time::now().toSec();
 	// t1 = clock()*0.001;
 	//t1 = clock();
-        Tracking(frame, result);
+        // Tracking(frame, result);
         end_time =ros::Time::now().toSec();
         // t2 = clock()*0.001;
 	//t2 = clock();
