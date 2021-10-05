@@ -146,7 +146,7 @@ public:
 LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 {
     image_transport::ImageTransport it(nh);
-    image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
+    // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
     // image_raw_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &LK_OpticalFlow::image_raw_Callback,this);
     mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &LK_OpticalFlow::mask_img_Callback,this);
     // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub(nh, "/ESPNet_v2/predict_img", 1);
@@ -193,7 +193,8 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     // cout << "Size:" << frame.size() << " " << "Column: " << frame.cols << " " << "Row: " << frame.rows << endl;
 
     boost::shared_ptr<sensor_msgs::Image const> rgb_ptr;
-    rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/camera/color/image_raw",rgb_nh);
+    // rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/camera/color/image_raw",rgb_nh);
+    rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/ESPNet_v2/predict_img",rgb_nh);
     rgb_ptr_frame = cv_bridge::toCvCopy(rgb_ptr, "bgr8")->image;
     cv::Mat dstImage(rgb_ptr_frame.rows, rgb_ptr_frame.cols, CV_8UC3, cv::Scalar::all(0));
     // dstImage = rgb_ptr_frame.clone();
@@ -226,8 +227,8 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
             }
         }
     }
-    cout << "dstImage: " << dstImage << endl;
-    cout << "**********************************************" << endl;
+    // cout << "dstImage: " << dstImage << endl;
+    // cout << "**********************************************" << endl;
 
     output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", dstImage).toImageMsg();
 	output_tstimg_pub.publish(output_tstimage);
@@ -237,90 +238,91 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     }
 }
 
-void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
+// void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
 
-    //t1 = clock()*0.001;
-    // cout << "ok" << endl;
-    cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
-    frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
-    // mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
+//     //t1 = clock()*0.001;
+//     // cout << "ok" << endl;
+//     cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
+//     frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
+//     // mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
 
-    cv::Mat rgb_dstImage(frame.rows, frame.cols, CV_8UC3, cv::Scalar::all(0));
-    rgb_dstImage = frame.clone();
+//     cv::Mat rgb_dstImage(frame.rows, frame.cols, CV_8UC3, cv::Scalar::all(0));
+//     rgb_dstImage = frame.clone();
     
-    rgb_cols = frame.cols;
-    rgb_rows = frame.rows;
-    rgb_channels = frame.channels();
-    // cout << "rgb_dstImage: " << rgb_dstImage << endl;
-    // cout << "size: " << rgb_dstImage.size() << endl;
-    // cout << "channel: " << rgb_channels << endl;
-    // cout << "rgb_tmp_Index: " << tmp_index << endl;
-    // for (r = 0; r < rgb_rows; r++){
-    //     for (c = 0; c < rgb_cols; c++){
-    //         int rgb_index = 640 * r + c;
-    //         if (rgb_index == tmp_index){
-                // Vec3b rgb_pixel = frame.at<Vec3b>(r,c);
-                // cout << "rgb_Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
-                // rgb_dstImage.at<Vec3b>(r, c) = frame.at<Vec3b>(r,c);
-    //         }
-    //     }
-    // }
-    // cout << "**********************************************" << endl;
+//     rgb_cols = frame.cols;
+//     rgb_rows = frame.rows;
+//     rgb_channels = frame.channels();
+//     // cout << "rgb_dstImage: " << rgb_dstImage << endl;
+//     // cout << "size: " << rgb_dstImage.size() << endl;
+//     // cout << "channel: " << rgb_channels << endl;
+//     // cout << "rgb_tmp_Index: " << tmp_index << endl;
+//     // for (r = 0; r < rgb_rows; r++){
+//     //     for (c = 0; c < rgb_cols; c++){
+//     //         int rgb_index = 640 * r + c;
+//     //         if (rgb_index == tmp_index){
+//                 // Vec3b rgb_pixel = frame.at<Vec3b>(r,c);
+//                 // cout << "rgb_Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
+//                 // rgb_dstImage.at<Vec3b>(r, c) = frame.at<Vec3b>(r,c);
+//     //         }
+//     //     }
+//     // }
+//     // cout << "**********************************************" << endl;
 
-    // output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", rgb_dstImage).toImageMsg();
-	// output_tstimg_pub.publish(output_tstimage);
+//     // output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", rgb_dstImage).toImageMsg();
+// 	// output_tstimg_pub.publish(output_tstimage);
 
 
-    // TODO: wait for pointcloud2 topic
-    boost::shared_ptr<sensor_msgs::PointCloud2 const> tmp_ptr;
-    sensor_msgs::PointCloud2 cloud_msg;
-    tmp_ptr = ros::topic::waitForMessage<sensor_msgs::PointCloud2>("/camera/depth_registered/points", my_nh);
-    if(tmp_ptr != NULL){
-        cloud_msg = *tmp_ptr;
-    }
+//     // TODO: wait for pointcloud2 topic
+//     boost::shared_ptr<sensor_msgs::PointCloud2 const> tmp_ptr;
+//     sensor_msgs::PointCloud2 cloud_msg;
+//     tmp_ptr = ros::topic::waitForMessage<sensor_msgs::PointCloud2>("/camera/depth_registered/points", my_nh);
+//     if(tmp_ptr != NULL){
+//         cloud_msg = *tmp_ptr;
+//     }
 
-    // Convert ROS pointcloud2 topic to PCL pointcloud
-    // include pcl_conversion.h --> pcl::fromROSMsg(XXXXXXX)
-    pcl::fromROSMsg(cloud_msg, *cloud_ptr);
+//     // Convert ROS pointcloud2 topic to PCL pointcloud
+//     // include pcl_conversion.h --> pcl::fromROSMsg(XXXXXXX)
+//     pcl::fromROSMsg(cloud_msg, *cloud_ptr);
     
 
-    // test_image_pub.publish(cv_ptr->toImageMsg());
+//     // test_image_pub.publish(cv_ptr->toImageMsg());
 
-    // if(!mask_frame.empty()){
-    //     cout << "mask_frame" << endl;
-    // }
+//     // if(!mask_frame.empty()){
+//     //     cout << "mask_frame" << endl;
+//     // }
 
-    if(!frame.empty())
-    {
-        begin_time =ros::Time::now().toSec();
-	// t1 = clock()*0.001;
-	//t1 = clock();
-        // Tracking(frame, result);
-        end_time =ros::Time::now().toSec();
-        // t2 = clock()*0.001;
-	//t2 = clock();
-        delta_time = end_time-begin_time;
-        // ROS_INFO("Tracking Time: %f", delta_time);
+//     if(!frame.empty())
+//     {
+//         begin_time =ros::Time::now().toSec();
+// 	// t1 = clock()*0.001;
+// 	//t1 = clock();
+//         // Tracking(frame, result);
+//         end_time =ros::Time::now().toSec();
+//         // t2 = clock()*0.001;
+// 	//t2 = clock();
+//         delta_time = end_time-begin_time;
+//         // ROS_INFO("Tracking Time: %f", delta_time);
 
-        //cout << "ClockDeltaTime : "<< delta_time << "ms" << endl;
-		//cout << "FPS : "<< 1 / delta_time * 1000 << endl;
-        //count=count+1;           
-    }
-    else
-    { 
-        printf("No captured frame -- Break!\n");
-        return;
-    }
-    int c = waitKey(50);
-    if( (char)c == 27 )
-    {
-        return; 
-    } 
-}
+//         //cout << "ClockDeltaTime : "<< delta_time << "ms" << endl;
+// 		//cout << "FPS : "<< 1 / delta_time * 1000 << endl;
+//         //count=count+1;           
+//     }
+//     else
+//     { 
+//         printf("No captured frame -- Break!\n");
+//         return;
+//     }
+//     int c = waitKey(50);
+//     if( (char)c == 27 )
+//     {
+//         return; 
+//     } 
+// }
 
 
 void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
 {
+    cout << "tracking" << endl;
     cvtColor(frame, gray, CV_BGR2GRAY);
     frame.copyTo(output);
     // 添加特徵點
@@ -387,7 +389,7 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         circle(output, initial[i], 3, Scalar(0, 255, 0), -1);
         circle(output, points[1][i], 3, Scalar(0, 0, 255), -1);
 
-		//ROS_INFO("\033[1;33mPoints pixel [ x-O y_o x_t y_t]: [ %lf %lf %lf %lf ]\033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
+		ROS_INFO("\033[1;33mPoints pixel [ x-O y_o x_t y_t]: [ %lf %lf %lf %lf ]\033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
         //cout<< "==================================" << endl;
         //cout << "InitialPoint : " << initial[i] << endl;
         //cout << "TerminalPoint : " << points[1][i] << endl;
@@ -402,100 +404,103 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         // feature_points_msg.y = points[1][i].y;
         // feature_points_msg.z = 0;
         // feature_points_pub.publish(feature_points_msg);
+//*******************************************************************************************************************
+        // int initial_index = 640 * initial[i].y + initial[i].x; //計算Origin point單一pixel-wise於640x480第幾個
+        // if(pcl_isfinite(cloud_ptr->points[initial_index].x)) 
+        // {   //ROS_INFO("\033[1;32m\nOrigin point[x y z] : [%lf %lf %lf]\033[0m",cloud_ptr->points[initial_index].x,cloud_ptr->points[initial_index].y,cloud_ptr->points[initial_index].z);
 
-        int initial_index = 640 * initial[i].y + initial[i].x; //計算Origin point單一pixel-wise於640x480第幾個
-        if(pcl_isfinite(cloud_ptr->points[initial_index].x)) 
-        {   //ROS_INFO("\033[1;32m\nOrigin point[x y z] : [%lf %lf %lf]\033[0m",cloud_ptr->points[initial_index].x,cloud_ptr->points[initial_index].y,cloud_ptr->points[initial_index].z);
+        //     origin_pointcloud.r = 0;
+        //     origin_pointcloud.g = 255;
+        //     origin_pointcloud.b = 0;
+        //     origin_pointcloud.x = cloud_ptr->points[initial_index].x;
+        //     origin_pointcloud.y = cloud_ptr->points[initial_index].y;
+        //     origin_pointcloud.z = cloud_ptr->points[initial_index].z;
+        //     origincloudptr_to_ROSMsg->points.push_back(origin_pointcloud);
 
-            origin_pointcloud.r = 0;
-            origin_pointcloud.g = 255;
-            origin_pointcloud.b = 0;
-            origin_pointcloud.x = cloud_ptr->points[initial_index].x;
-            origin_pointcloud.y = cloud_ptr->points[initial_index].y;
-            origin_pointcloud.z = cloud_ptr->points[initial_index].z;
-            origincloudptr_to_ROSMsg->points.push_back(origin_pointcloud);
+		// 	//printf("origin_pointcloud.x : %d\n", cloud_ptr->points[initial_index].x);
 
-			//printf("origin_pointcloud.x : %d\n", cloud_ptr->points[initial_index].x);
+		// 	//origin_point.data.push_back(cloud_ptr->points[initial_index].x);
+		// 	//origin_point.data.push_back(cloud_ptr->points[initial_index].y);
+		// 	//origin_point.data.push_back(cloud_ptr->points[initial_index].z);
+		// 	//origin_point_pub.publish(origin_point);
+		// 	//origin_point.data.clear();
 
-			//origin_point.data.push_back(cloud_ptr->points[initial_index].x);
-			//origin_point.data.push_back(cloud_ptr->points[initial_index].y);
-			//origin_point.data.push_back(cloud_ptr->points[initial_index].z);
-			//origin_point_pub.publish(origin_point);
-			//origin_point.data.clear();
-
-        }
+        // }
 		
 
-        int target_index = 640 * points[1][i].y + points[1][i].x; //計算Target point單一pixel-wise於640x480第幾個
-        if(pcl_isfinite(cloud_ptr->points[target_index].x))
-        {
-			//ROS_INFO("\033[1;31m\nTarget point[x y z] : [%lf %lf %lf]\n\033[0m",cloud_ptr->points[target_index].x,cloud_ptr->points[target_index].y,cloud_ptr->points[target_index].z);
-            //cout << "Target point:\nx: " << cloud_ptr->points[target_index].x;
-            //cout << "\ny: " << cloud_ptr->points[target_index].y;
-            //cout << "\nz: " << cloud_ptr->points[target_index].z << endl;
-            //cout << "**************" << endl;
-            //cout << endl;
+        // int target_index = 640 * points[1][i].y + points[1][i].x; //計算Target point單一pixel-wise於640x480第幾個
+        // if(pcl_isfinite(cloud_ptr->points[target_index].x))
+        // {
+		// 	//ROS_INFO("\033[1;31m\nTarget point[x y z] : [%lf %lf %lf]\n\033[0m",cloud_ptr->points[target_index].x,cloud_ptr->points[target_index].y,cloud_ptr->points[target_index].z);
+        //     //cout << "Target point:\nx: " << cloud_ptr->points[target_index].x;
+        //     //cout << "\ny: " << cloud_ptr->points[target_index].y;
+        //     //cout << "\nz: " << cloud_ptr->points[target_index].z << endl;
+        //     //cout << "**************" << endl;
+        //     //cout << endl;
             
-            // target_pointcloud.r = cloud_ptr->points[target_index].r;
-            // target_pointcloud.g = cloud_ptr->points[target_index].g;
-            // target_pointcloud.b = cloud_ptr->points[target_index].b;
-            target_pointcloud.r = 255;
-            target_pointcloud.g = 0;
-            target_pointcloud.b = 0;
-            target_pointcloud.x = cloud_ptr->points[target_index].x;
-            target_pointcloud.y = cloud_ptr->points[target_index].y;
-            target_pointcloud.z = cloud_ptr->points[target_index].z;
-            targetcloudptr_to_ROSMsg->points.push_back(target_pointcloud);
+        //     // target_pointcloud.r = cloud_ptr->points[target_index].r;
+        //     // target_pointcloud.g = cloud_ptr->points[target_index].g;
+        //     // target_pointcloud.b = cloud_ptr->points[target_index].b;
+        //     target_pointcloud.r = 255;
+        //     target_pointcloud.g = 0;
+        //     target_pointcloud.b = 0;
+        //     target_pointcloud.x = cloud_ptr->points[target_index].x;
+        //     target_pointcloud.y = cloud_ptr->points[target_index].y;
+        //     target_pointcloud.z = cloud_ptr->points[target_index].z;
+        //     targetcloudptr_to_ROSMsg->points.push_back(target_pointcloud);
 
-			//target_point.data.push_back(cloud_ptr->points[target_index].x);
-			//target_point.data.push_back(cloud_ptr->points[target_index].y);
-			//target_point.data.push_back(cloud_ptr->points[target_index].z);
-			//target_point_pub.publish(target_point);
-			//target_point.data.clear();
+		// 	//target_point.data.push_back(cloud_ptr->points[target_index].x);
+		// 	//target_point.data.push_back(cloud_ptr->points[target_index].y);
+		// 	//target_point.data.push_back(cloud_ptr->points[target_index].z);
+		// 	//target_point_pub.publish(target_point);
+		// 	//target_point.data.clear();
 
-        }
+        // }
 		
-		if((pcl_isfinite(cloud_ptr->points[initial_index].x)) && (pcl_isfinite(cloud_ptr->points[target_index].x)))
-        {
-			x_op_original = cloud_ptr->points[initial_index].x;
-			y_op_original = cloud_ptr->points[initial_index].y;
-			z_op_original = cloud_ptr->points[initial_index].z;
-			x_op_target = cloud_ptr->points[target_index].x;
-			y_op_target = cloud_ptr->points[target_index].y;
-			z_op_target = cloud_ptr->points[target_index].z;
-			// ROS_INFO("\033[1;32mOptical Flow points : [ %lf %lf %lf %lf %lf %lf ]\033[0m",x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target);
-			point_data.data.push_back(cloud_ptr->points[initial_index].x);
-			point_data.data.push_back(cloud_ptr->points[initial_index].y);
-			point_data.data.push_back(cloud_ptr->points[initial_index].z);
-			point_data.data.push_back(cloud_ptr->points[target_index].x);
-			point_data.data.push_back(cloud_ptr->points[target_index].y);
-			point_data.data.push_back(cloud_ptr->points[target_index].z);
-			point_data_pub.publish(point_data);
-			point_data.data.clear();
+		// if((pcl_isfinite(cloud_ptr->points[initial_index].x)) && (pcl_isfinite(cloud_ptr->points[target_index].x)))
+        // {
+		// 	x_op_original = cloud_ptr->points[initial_index].x;
+		// 	y_op_original = cloud_ptr->points[initial_index].y;
+		// 	z_op_original = cloud_ptr->points[initial_index].z;
+		// 	x_op_target = cloud_ptr->points[target_index].x;
+		// 	y_op_target = cloud_ptr->points[target_index].y;
+		// 	z_op_target = cloud_ptr->points[target_index].z;
+		// 	ROS_INFO("\033[1;32mOptical Flow points : [ %lf %lf %lf %lf %lf %lf ]\033[0m",x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target);
+		// 	point_data.data.push_back(cloud_ptr->points[initial_index].x);
+		// 	point_data.data.push_back(cloud_ptr->points[initial_index].y);
+		// 	point_data.data.push_back(cloud_ptr->points[initial_index].z);
+		// 	point_data.data.push_back(cloud_ptr->points[target_index].x);
+		// 	point_data.data.push_back(cloud_ptr->points[target_index].y);
+		// 	point_data.data.push_back(cloud_ptr->points[target_index].z);
+		// 	point_data_pub.publish(point_data);
+		// 	point_data.data.clear();
 			
-			// ROS_INFO("\033[1;31mDistance : [ %lf m ]\033[0m",ComputeDistance(x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target));
-			distance_data.data.push_back(distance);
-			distance_data_pub.publish(distance_data);
-			distance_data.data.clear();
+		// 	ROS_INFO("\033[1;31mDistance : [ %lf m ]\033[0m",ComputeDistance(x_op_original,y_op_original,z_op_original,x_op_target,y_op_target,z_op_target));
+		// 	distance_data.data.push_back(distance);
+		// 	distance_data_pub.publish(distance_data);
+		// 	distance_data.data.clear();
 
-			// ROS_INFO("\033[1;33mcmd_vel : [ %lf m/s ]\n\033[0m",ComputeVelocity(distance, delta_time));
-			vel_data.data.push_back(vel);
-			vel_data_pub.publish(vel_data);
-			vel_data.data.clear();
-		}
+		// 	ROS_INFO("\033[1;33mcmd_vel : [ %lf m/s ]\n\033[0m",ComputeVelocity(distance, delta_time));
+		// 	vel_data.data.push_back(vel);
+		// 	vel_data_pub.publish(vel_data);
+		// 	vel_data.data.clear();
+		// }
+//*******************************************************************************************************************************
     }
-    pcl::toROSMsg(*(origincloudptr_to_ROSMsg), originPointCloudtoROSMsg);
-    originPointCloudtoROSMsg.header.frame_id = "map";
-    originPointCloudtoROSMsg.header.stamp = ros::Time::now();
-    origin_pointcloud_pub.publish(originPointCloudtoROSMsg);
-    origincloudptr_to_ROSMsg->points.clear();
+//**********************************************************************************************
+    // pcl::toROSMsg(*(origincloudptr_to_ROSMsg), originPointCloudtoROSMsg);
+    // originPointCloudtoROSMsg.header.frame_id = "map";
+    // originPointCloudtoROSMsg.header.stamp = ros::Time::now();
+    // origin_pointcloud_pub.publish(originPointCloudtoROSMsg);
+    // origincloudptr_to_ROSMsg->points.clear();
 
-    pcl::toROSMsg(*(targetcloudptr_to_ROSMsg), targetPointCloudtoROSMsg);
-    targetPointCloudtoROSMsg.header.frame_id = "map";
-    targetPointCloudtoROSMsg.header.stamp = ros::Time::now();
-    target_pointcloud_pub.publish(targetPointCloudtoROSMsg);
-    targetcloudptr_to_ROSMsg->points.clear(); // ros::Duration(0.033).sleep();
+    // pcl::toROSMsg(*(targetcloudptr_to_ROSMsg), targetPointCloudtoROSMsg);
+    // targetPointCloudtoROSMsg.header.frame_id = "map";
+    // targetPointCloudtoROSMsg.header.stamp = ros::Time::now();
+    // target_pointcloud_pub.publish(targetPointCloudtoROSMsg);
+    // targetcloudptr_to_ROSMsg->points.clear(); // ros::Duration(0.033).sleep();
     // 把當前跟蹤結果作為下一此參考
+//**********************************************************************************************
     swap(points[1], points[0]);
     swap(gray_prev, gray);
     //cv::imshow("Lucas–Kanade Optical Flow Tracking", output);
