@@ -178,7 +178,7 @@ class Prediction:
                 self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
                 self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "8UC3"))
             if args.overlay:
-                overlayed = cv2.addWeighted(img_orig, 1.0, classMap_numpy_color, 0.5, 0)
+                overlayed = cv2.addWeighted(img_orig, 1.0, classMap_numpy_color, 0.01, 0)
                 self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8"))
         if args.cityFormat:
             classMap_numpy = self.relabel(classMap_numpy.astype(np.uint8))

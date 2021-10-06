@@ -25,4 +25,5 @@ delete the cached data file (~/ESPNetv2_pytorch/segmentation/city.p)
 ```
 conda activate opencv_build #start up environment
 CUDA_VISIBLE_DEVICES=0 python3 main_hao.py --s 2.0 #start to train
-python3 prediction_ros.py --s 2.0 --pretrained ./dataSet/hao/espnetv2/results_espnetv2_2.0_2021-08-16_22-5-2.0/model_best.pth #evaluate the module
+python3 prediction_ros.py --s 2.0 --pretrained ./dataSet/hao/espnetv2/results_espnetv2_2.0_2021-09-15_14-47-2.0/model_best.pth
+

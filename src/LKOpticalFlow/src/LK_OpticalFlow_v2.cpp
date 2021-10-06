@@ -232,10 +232,11 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
 
     output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", dstImage).toImageMsg();
 	output_tstimg_pub.publish(output_tstimage);
-
-    if(!dstImage.empty()){
-        Tracking(dstImage, result);
-    }
+    
+    Tracking(dstImage, result);
+    // if(!dstImage.empty()){
+    //     Tracking(dstImage, result);
+    // }
 }
 
 // void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
