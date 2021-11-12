@@ -233,10 +233,16 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", dstImage).toImageMsg();
 	output_tstimg_pub.publish(output_tstimage);
     
-    Tracking(dstImage, result);
-    // if(!dstImage.empty()){
+    // Tracking(dstImage, result);
+    // if(!dstImage.empty() && !rgb_ptr_frame.empty()){
     //     Tracking(dstImage, result);
     // }
+    try{
+        Tracking(dstImage, result);
+    }catch(cv::Exception& e){
+        const char* err_msg = e.what();
+        cout << "Exception caught: " << err_msg << endl;
+    }
 }
 
 // void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
