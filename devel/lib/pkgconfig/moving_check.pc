@@ -1,4 +1,4 @@
-prefix=/home/chinghaomeng/motion_tracking_design/devel
+prefix=/home/hao/motion_tracking_design/devel
 
 Name: moving_check
 Description: Description of moving_check

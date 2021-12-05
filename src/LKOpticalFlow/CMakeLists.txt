@@ -22,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(Boost REQUIRED)
 
-find_package(OpenCV 3.3.1 REQUIRED)
+find_package(OpenCV 3.4.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
 find_package(Eigen3 REQUIRED)

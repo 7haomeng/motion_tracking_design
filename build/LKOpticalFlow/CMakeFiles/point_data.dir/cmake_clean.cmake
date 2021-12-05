@@ -1,8 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/chinghaomeng/motion_tracking_design/devel/lib/LKOpticalFlow/point_data"
-  "/home/chinghaomeng/motion_tracking_design/devel/lib/LKOpticalFlow/point_data.pdb"
   "CMakeFiles/point_data.dir/src/point_data.cpp.o"
-  "CMakeFiles/point_data.dir/src/point_data.cpp.o.d"
+  "/home/hao/motion_tracking_design/devel/lib/LKOpticalFlow/point_data.pdb"
+  "/home/hao/motion_tracking_design/devel/lib/LKOpticalFlow/point_data"
 )
 
 # Per-language clean rules from dependency scanning.

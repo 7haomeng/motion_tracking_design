@@ -7,4 +7,4 @@
 # new environment variables
 
 # modified environment variables
-export PWD="/home/chinghaomeng/motion_tracking_design/build"
+export PWD='/home/hao/motion_tracking_design/build'

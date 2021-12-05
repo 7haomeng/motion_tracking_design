@@ -1,0 +1,8 @@
+prefix=/home/hao/motion_tracking_design/devel
+
+Name: ORBextractor
+Description: Description of ORBextractor
+Version: 0.0.0
+Cflags: -I/home/hao/motion_tracking_design/src/ORBextractor/include
+Libs: -L${prefix}/lib 
+Requires: 

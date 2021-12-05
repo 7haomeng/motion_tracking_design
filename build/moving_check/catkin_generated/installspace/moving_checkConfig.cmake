@@ -67,14 +67,14 @@ set(moving_check_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(moving_check_SOURCE_PREFIX /home/chinghaomeng/motion_tracking_design/src/moving_check)
-  set(moving_check_DEVEL_PREFIX /home/chinghaomeng/motion_tracking_design/devel)
+  set(moving_check_SOURCE_PREFIX /home/hao/motion_tracking_design/src/moving_check)
+  set(moving_check_DEVEL_PREFIX /home/hao/motion_tracking_design/devel)
   set(moving_check_INSTALL_PREFIX "")
   set(moving_check_PREFIX ${moving_check_DEVEL_PREFIX})
 else()
   set(moving_check_SOURCE_PREFIX "")
   set(moving_check_DEVEL_PREFIX "")
-  set(moving_check_INSTALL_PREFIX /home/chinghaomeng/motion_tracking_design/install)
+  set(moving_check_INSTALL_PREFIX /home/hao/motion_tracking_design/install)
   set(moving_check_PREFIX ${moving_check_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/chinghaomeng/motion_tracking_design/install/lib;/home/chinghaomeng/motion_tracking_design/devel/lib;/opt/ros/kinetic/lib)
+    foreach(path /home/hao/motion_tracking_design/install/lib;/home/hao/motion_tracking_design/devel/lib;/opt/ros/melodic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

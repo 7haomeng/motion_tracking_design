@@ -1,8 +1,8 @@
-# Install script for directory: /home/chinghaomeng/motion_tracking_design/src/LKOpticalFlow
+# Install script for directory: /home/hao/motion_tracking_design/src/LKOpticalFlow
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/chinghaomeng/motion_tracking_design/install")
+  set(CMAKE_INSTALL_PREFIX "/home/hao/motion_tracking_design/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -37,23 +37,18 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-# Set default install directory permissions.
-if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
-endif()
-
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/chinghaomeng/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlow.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/hao/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlow.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/LKOpticalFlow/cmake" TYPE FILE FILES
-    "/home/chinghaomeng/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlowConfig.cmake"
-    "/home/chinghaomeng/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlowConfig-version.cmake"
+    "/home/hao/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlowConfig.cmake"
+    "/home/hao/motion_tracking_design/build/LKOpticalFlow/catkin_generated/installspace/LKOpticalFlowConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/LKOpticalFlow" TYPE FILE FILES "/home/chinghaomeng/motion_tracking_design/src/LKOpticalFlow/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/LKOpticalFlow" TYPE FILE FILES "/home/hao/motion_tracking_design/src/LKOpticalFlow/package.xml")
 endif()
 

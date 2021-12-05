@@ -17,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
 )
 
-find_package(OpenCV 3.3.1 REQUIRED)
+find_package(OpenCV 3.4.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -132,11 +132,13 @@ include_directories(
 #   src/${PROJECT_NAME}/moving_check.cpp
 # )
 
-add_executable(moving_check src/moving_check.cpp)
-target_link_libraries(moving_check ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-
-add_executable(dynamic_object src/dynamic_object.cpp)
-target_link_libraries(dynamic_object ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
+################ execute ######################
+# add_executable(moving_check src/moving_check.cpp)
+# target_link_libraries(moving_check ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
+# 
+# add_executable(dynamic_object src/dynamic_object.cpp)
+# target_link_libraries(dynamic_object ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
+################ execute ######################
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries

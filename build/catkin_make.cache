@@ -1,2 +1,2 @@
-LKOpticalFlow:moving_check:segmentation
--DCATKIN_DEVEL_PREFIX=/home/chinghaomeng/motion_tracking_design/devel -DCMAKE_INSTALL_PREFIX=/home/chinghaomeng/motion_tracking_design/install -G Unix Makefiles
+LKOpticalFlow:ORBextractor:moving_check:segmentation
+-DCATKIN_DEVEL_PREFIX=/home/hao/motion_tracking_design/devel -DCMAKE_INSTALL_PREFIX=/home/hao/motion_tracking_design/install -G Unix Makefiles

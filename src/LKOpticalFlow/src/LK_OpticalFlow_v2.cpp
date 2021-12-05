@@ -83,7 +83,11 @@ private:
 	float x_op_target;
 	float y_op_target;
 	float z_op_target;
-	float distance;
+	// float distance;
+	float EuclideanDis;
+	float EuDis;
+	float D4Dis;
+	float CityBlockDis;
 	float topic_t;
 	double vel;
     double begin_time;
@@ -106,6 +110,7 @@ private:
 	std_msgs::Float64MultiArray point_data;
 	std_msgs::Float64MultiArray distance_data;
 	std_msgs::Float64MultiArray vel_data;
+	std_msgs::Float64MultiArray tracked_point_data;
     
     PointCloudXYZRGBPtr cloud_ptr;
     originpoint origin_pointcloud;
@@ -115,13 +120,16 @@ private:
 
 public:
     LK_OpticalFlow(ros::NodeHandle);
+    ~LK_OpticalFlow();
     void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
     void image_raw_Callback(const sensor_msgs::ImageConstPtr&);
     void Tracking(Mat &, Mat &);
     bool AddNewPoints();
     bool AcceptTrackedPoint(int);
-	float ComputeDistance(float, float, float, float, float, float);
-	float ComputeVelocity(float, clock_t);
+	float EuclideanDistance(float, float, float, float);
+	float D4Distance(float, float, float, float);
+	// float ComputeDistance(float, float, float, float, float, float);
+	// float ComputeVelocity(float, clock_t);
 	ros::Subscriber image_raw_sub;
     ros::Publisher feature_points_pub;
     ros::Publisher origin_pointcloud_pub;
@@ -131,6 +139,7 @@ public:
 	ros::Publisher point_data_pub;
 	ros::Publisher distance_data_pub;
 	ros::Publisher vel_data_pub;
+	ros::Publisher tracked_point_data_pub;
     ros::Publisher output_image_pub;
     ros::Publisher output_tstimg_pub;
     ros::Subscriber mask_img_sub;
@@ -154,15 +163,16 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
     // message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image> sync(predictImage_sub, maskImage_sub, 10);
     // sync.registerCallback(boost::bind(&LK_OpticalFlow::image_raw_Callback, this, _1, _2));
     // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
-    feature_points_pub = nh.advertise<geometry_msgs::Vector3>("lk/feature_points", 1);
+    // feature_points_pub = nh.advertise<geometry_msgs::Vector3>("lk/feature_points", 1);
     // feature_points_pub = nh.advertise<geometry_msgs::Point32>("feature_points", 10);
-    origin_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("lk/origin_pointcloud", 1);
-    target_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("lk/target_pointcloud", 1);
-	origin_point_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/origin_point", 1);
-	target_point_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/target_point", 1);
-	point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/point_data", 1);
-	distance_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/distance_data", 1);
-	vel_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/vel_data", 1);
+    // origin_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("lk/origin_pointcloud", 1);
+    // target_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("lk/target_pointcloud", 1);
+	// origin_point_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/origin_point", 1);
+	// target_point_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/target_point", 1);
+	// point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/point_data", 1);
+	// distance_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/distance_data", 1);
+	// vel_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/vel_data", 1);
+	tracked_point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/tracked_point_data", 1);
 
 	// output_image_pub = it.advertise("lk/camera/LK_OpticalFlow_image", 1);
     // output_image_pub = it.advertise("moving_check/camera/semantic_opticalflow_image", 1);
@@ -178,6 +188,10 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
     cloud_ptr = PointCloudXYZRGBPtr(new PointCloudXYZRGB);
     origincloudptr_to_ROSMsg = OriginPointCloudXYZRGBtoROSMsgPtr(new OriginPointCloudXYZRGBtoROSMsg);
     targetcloudptr_to_ROSMsg = TargetPointCloudXYZRGBtoROSMsgPtr(new TargetPointCloudXYZRGBtoROSMsg);    
+}
+
+LK_OpticalFlow::~LK_OpticalFlow()
+{
 }
 
 void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_msg){
@@ -213,7 +227,7 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
             mask_label = int(mask_data[j]);
             // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
             if(mask_label == 1){
-                cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
+                // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
                 // Vec3b rgb_pixel = rgb_ptr_frame.at<Vec3b>(i,j);
                 // Vec3b dstImage_pixel = dstImage.at<Vec3b>(i,j);
                 // dstImage_pixel[0] = rgb_pixel[0];
@@ -329,18 +343,20 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
 
 void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
 {
-    cout << "tracking" << endl;
+    printf( "\033[1;32;1m ************************ Start Tracking ************************\n \033[0m" );
+    // cout << "tracking" << endl;
     cvtColor(frame, gray, CV_BGR2GRAY);
     frame.copyTo(output);
+    // cout << "00" << endl;
     // 添加特徵點
     if (AddNewPoints()) 
     {
         //角點檢測
-            //image:輸入圖像(gray)
-            //corners:輸出角點vector(features)
-            //maxCorners:檢測的最大角點數目(maxCount)
-            //qualityLevel:特徵檢測的等級,一般於0.01-0.1之間(qLevel)
-            //minDistance:兩特徵點之間的最小距離，小於此距離的點要被忽略(minDist)
+        //image:輸入圖像(gray)
+        //corners:輸出角點vector(features)
+        //maxCorners:檢測的最大角點數目(maxCount)
+        //qualityLevel:特徵檢測的等級,一般於0.01-0.1之間(qLevel)
+        //minDistance:兩特徵點之間的最小距離，小於此距離的點要被忽略(minDist)
         goodFeaturesToTrack(gray, features, maxCount, qLevel, minDist);
         
         // cout << "============features vector============" << endl;
@@ -364,13 +380,15 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         gray.copyTo(gray_prev);
     }
     // LK-光流法運動估計
-        //prevImg:計算光流的前一偵圖片(gray_prev）
-        //nextImg:下一偵圖片(gray)
-        //prevPts:前一偵圖片中的特徵點（角點）,
-        //nextPts:輸出特徵點於下一偵圖片的新位置
-        //status:若兩偵之間的特徵點有發生變化（有光流法現象）則為1，否則為0
-        //err:兩偵之間特徵點位置的誤差
+    //prevImg:計算光流的前一偵圖片(gray_prev）
+    //nextImg:下一偵圖片(gray)
+    //prevPts:前一偵圖片中的特徵點（角點）,
+    //nextPts:輸出特徵點於下一偵圖片的新位置
+    //status:若兩偵之間的特徵點有發生變化（有光流法現象）則為1，否則為0
+    //err:兩偵之間特徵點位置的誤差
+    // cout << "01" << endl;
     calcOpticalFlowPyrLK(gray_prev, gray, points[0], points[1], status, err); // LK-光流法運動估計
+    // cout << "11" << endl;
     // cout << "w: " << gray.cols << ", h: " << gray.rows << endl;
     // 去掉一些不好的特徵點
     int k = 0;
@@ -396,8 +414,22 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         circle(output, initial[i], 3, Scalar(0, 255, 0), -1);
         circle(output, points[1][i], 3, Scalar(0, 0, 255), -1);
 
-		ROS_INFO("\033[1;33mPoints pixel [ x-O y_o x_t y_t]: [ %lf %lf %lf %lf ]\033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
-        //cout<< "==================================" << endl;
+		// printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m \033[1;31m EuclideanDis : %f \033[0m \033[1;34m D4Dis : %f\n \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y, EuclideanDis, D4Dis);
+        
+		EuDis = EuclideanDistance((float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
+		CityBlockDis = D4Distance((float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
+		printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m \033[1;31m EuclideanDis : %f \033[0m \033[1;34m D4Dis : %f\n \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y, EuDis, CityBlockDis);
+		
+		tracked_point_data.data.push_back((float)initial[i].x);
+		tracked_point_data.data.push_back((float)initial[i].y);
+		tracked_point_data.data.push_back((float)points[1][i].x);
+		tracked_point_data.data.push_back((float)points[1][i].y);
+		tracked_point_data.data.push_back(EuDis);
+		tracked_point_data.data.push_back(CityBlockDis);
+		tracked_point_data_pub.publish(tracked_point_data);
+		tracked_point_data.data.clear();
+
+		//cout<< "==================================" << endl;
         //cout << "InitialPoint : " << initial[i] << endl;
         //cout << "TerminalPoint : " << points[1][i] << endl;
         //cout<< "==================================\n" << endl;
@@ -527,23 +559,38 @@ bool LK_OpticalFlow::AddNewPoints()
 bool LK_OpticalFlow::AcceptTrackedPoint(int i)
 {
     deltaDist = abs(points[0][i].x - points[1][i].x) + abs(points[0][i].y - points[1][i].y);
-    return status[i] && deltaDist > 2;
+    // printf("\033[1;31m deltaDist : %f\n \033[0m", deltaDist);
+	return status[i] && deltaDist > 2;
 }
 
-float LK_OpticalFlow::ComputeDistance(float x_o, float y_o, float z_o, float x_t, float y_t, float z_t)
+float LK_OpticalFlow::EuclideanDistance(float init_x, float init_y, float end_x, float end_y)
 {
-	//distance = sqrt(pow((x_t - x_o),2) + pow((y_t - y_o),2) + pow((z_t - z_o),2));
-	distance = sqrt(pow((x_t - x_o),2) + pow((y_t - y_o),2));
-	return distance;
+	EuclideanDis = sqrt(pow((end_x - init_x),2) + pow((end_y - init_y),2));
+	// printf("\033[1;31m EuclideanDis : %f\n \033[0m", EuclideanDis);
+	return EuclideanDis;
 }
 
-float LK_OpticalFlow::ComputeVelocity(float dis, clock_t t)
+float LK_OpticalFlow::D4Distance(float init_x, float init_y, float end_x, float end_y)
 {
-	//clock_t ts = (double)t/CLOCKS_PER_SEC;
-	//topic_t = 1/15.725;
-	vel = dis/t;
-	return vel;
+	D4Dis = abs(end_x - init_x) + abs(end_y - init_y);
+	// printf("\033[1;34m D4Dis : %f\n \033[0m", D4Dis);
+	return D4Dis;
 }
+
+// float LK_OpticalFlow::ComputeDistance(float x_o, float y_o, float z_o, float x_t, float y_t, float z_t)
+// {
+// 	//distance = sqrt(pow((x_t - x_o),2) + pow((y_t - y_o),2) + pow((z_t - z_o),2));
+// 	distance = sqrt(pow((x_t - x_o),2) + pow((y_t - y_o),2));
+// 	return distance;
+// }
+
+// float LK_OpticalFlow::ComputeVelocity(float dis, clock_t t)
+// {
+// 	//clock_t ts = (double)t/CLOCKS_PER_SEC;
+// 	//topic_t = 1/15.725;
+// 	vel = dis/t;
+// 	return vel;
+// }
 
 int main(int argc, char** argv)
 {

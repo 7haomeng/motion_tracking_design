@@ -1,0 +1,6 @@
+
+Epoch: 853	 Overall Acc (Tr): 0.9236	 Overall Acc (Val): 0.8512	 mIOU (Tr): 0.7015	 mIOU (Val): 0.4875
+Per Class Training Acc: [0.96458906 0.61254007]
+Per Class Validation Acc: [0.9293806 0.1774212]
+Per Class Training mIOU: [0.9187767 0.4842552]
+Per Class Validation mIOU: [0.8485738  0.12649614]

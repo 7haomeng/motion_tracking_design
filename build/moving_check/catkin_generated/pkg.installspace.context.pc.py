@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "".split(';') if "" != "" else []
 PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "moving_check"
-PROJECT_SPACE_DIR = "/home/chinghaomeng/motion_tracking_design/install"
+PROJECT_SPACE_DIR = "/home/hao/motion_tracking_design/install"
 PROJECT_VERSION = "0.0.0"

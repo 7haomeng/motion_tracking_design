@@ -19,9 +19,9 @@ import timeit
 # from PIL import Image
 from collections import OrderedDict
 
-if '/opt/ros/kinetic/lib/python2.7/dist-packages' in sys.path:
-    sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
-    sys.path.append('/home/chinghaomeng/cv_bridge_python3/install/lib/python3/dist-packages')
+if '/opt/ros/melodic/lib/python2.7/dist-packages' in sys.path:
+    sys.path.remove('/opt/ros/melodic/lib/python2.7/dist-packages')
+    sys.path.append('/home/hao/cv_bridge/install/lib/python3/dist-packages')
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 
@@ -45,7 +45,7 @@ class Prediction:
 
 
         if torch.cuda.is_available():
-            print("GPU : {0}\n".format(torch.cuda.is_available()))
+            print("\033[1;32;1m GPU : {0}\n \033[0m".format(torch.cuda.is_available()))
             self.modelA = self.modelA.cuda()
 
         # set to evaluation mode
@@ -172,9 +172,9 @@ class Prediction:
             for idx in range(len(self.pallete)):
                 [r, g, b] = self.pallete[idx]
                 # print(classMap_numpy);
-                print("classMap_numpy: {0}, shape: {1}, size: {2}".format(np.unique(classMap_numpy), classMap_numpy.shape, classMap_numpy.size))
+                # print("classMap_numpy: {0}, shape: {1}, size: {2}".format(np.unique(classMap_numpy), classMap_numpy.shape, classMap_numpy.size))
                 classMap_numpy_color[classMap_numpy == idx] = [b, g, r]
-                print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))
+                # print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))
                 self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
                 self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "8UC3"))
             if args.overlay:
@@ -213,7 +213,7 @@ if __name__ == '__main__':
         args.colored = True # This has to be true if you want to overlay
     
     
-    rospy.logwarn("Start predicting")
+    print('\033[1;32;1m Start predicting \033[0m')
     prediction = Prediction(args)
     rospy.on_shutdown(prediction.onShutdown)
 
