@@ -79,7 +79,8 @@ class Prediction:
                 [119, 11, 32],
                 [0, 0, 0]]
 
-        self.img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.predict_cb)
+        self.img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.predict_cb, queue_size=1)
+        # self.img_sub = rospy.Subscriber('/ORBextractor/image', Image, self.predict_cb)
         self.predict_pub = rospy.Publisher("/ESPNet_v2/predict_img", Image, queue_size=1)
         self.mask_pub = rospy.Publisher('/ESPNet_v2/mask_img', Image,queue_size=1)
         self.mask_color_pub = rospy.Publisher('/ESPNet_v2/mask_color_img', Image,queue_size=1)
@@ -129,7 +130,7 @@ class Prediction:
         mean = [107.82763, 108.5122, 112.27358]
         std = [55.42822, 54.48955, 51.91889]
 
-        model.eval()
+        # model.eval()
 
         start = timeit.default_timer()
         img = image
@@ -163,10 +164,12 @@ class Prediction:
         # rospy.loginfo("Time: {0}".format((stop-start)))
         # rospy.loginfo("fps: {0}\n".format(1/(stop-start)))
         classMap_numpy = img_out[0].max(0)[1].byte().cpu().data.numpy()
+
+
         # if i % 100 == 0 and i > 0:
             # print('Processed [{}/{}]'.format(i, len(image_list)))
         # name = image.split('/')[-1]
-        
+
         if args.colored:
             classMap_numpy_color = np.zeros((img.shape[1], img.shape[2], img.shape[0]), dtype=np.uint8)
             for idx in range(len(self.pallete)):

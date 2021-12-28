@@ -7,4 +7,9 @@
 # new environment variables
 
 # modified environment variables
+export CMAKE_PREFIX_PATH="/home/hao/motion_tracking_design/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/hao/motion_tracking_design/devel/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/hao/motion_tracking_design/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/hao/motion_tracking_design/build'
+export ROSLISP_PACKAGE_DIRECTORIES='/home/hao/motion_tracking_design/devel/share/common-lisp'
+export ROS_PACKAGE_PATH="/home/hao/motion_tracking_design/src:$ROS_PACKAGE_PATH"

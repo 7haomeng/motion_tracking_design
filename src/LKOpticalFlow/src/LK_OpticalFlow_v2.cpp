@@ -397,8 +397,14 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         // cout << "points[1][" << i <<"]:" << points[1][i] << endl;
         if (AcceptTrackedPoint(i))
         {
-            // printf("%hhu\n",status[i]);
-            // cout << deltaDist <<endl;
+            EuclideanDis = sqrt(pow((points[0][i].x - points[1][i].x),2) + pow((points[0][i].y - points[1][i].y),2));
+            // if (EuclideanDis > 100){ //0 20 50 100
+            // // printf("%hhu\n",status[i]);
+            // // cout << deltaDist <<endl;
+            // initial[k] = initial[i];
+            // points[1][k++] = points[1][i];
+            // }
+
             initial[k] = initial[i];
             points[1][k++] = points[1][i];
         }
@@ -410,8 +416,16 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
     // 顯示特徵點和運動軌跡
     for (size_t i=0; i<points[1].size(); i++)
     {
-        line(output, initial[i], points[1][i], Scalar(255, 0, 0));
-        circle(output, initial[i], 3, Scalar(0, 255, 0), -1);
+        EuclideanDis = sqrt(pow(((float)initial[i].x - (float)initial[i].y),2) + pow(((float)points[1][i].x - (float)points[1][i].y),2));
+        // if (EuclideanDis > 50){
+        //     (initial[i].x) = (initial[i].x);
+        //     (initial[i].y) = (initial[i].y);
+        //     (points[1][i].x) = (points[1][i].x);
+        //     (points[1][i].y) = (points[1][i].y);
+        // }
+
+        // line(output, initial[i], points[1][i], Scalar(255, 0, 0));
+        // circle(output, initial[i], 3, Scalar(0, 0, 255), -1);
         circle(output, points[1][i], 3, Scalar(0, 0, 255), -1);
 
 		// printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m \033[1;31m EuclideanDis : %f \033[0m \033[1;34m D4Dis : %f\n \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y, EuclideanDis, D4Dis);
@@ -561,20 +575,28 @@ bool LK_OpticalFlow::AcceptTrackedPoint(int i)
     deltaDist = abs(points[0][i].x - points[1][i].x) + abs(points[0][i].y - points[1][i].y);
     // printf("\033[1;31m deltaDist : %f\n \033[0m", deltaDist);
 	return status[i] && deltaDist > 2;
+    // return status[i] && deltaDist > 100;// 50
 }
+
+// float LK_OpticalFlow::EuclideanDistance(int j)
+// {
+// 	EuclideanDis = sqrt(pow((points[0][i].x - points[1][i].x),2) + pow((points[0][i].y - points[1][i].y),2));
+// 	// printf("\033[1;31m EuclideanDis : %f\n \033[0m", EuclideanDis);
+// 	// return EuclideanDis;
+// }
 
 float LK_OpticalFlow::EuclideanDistance(float init_x, float init_y, float end_x, float end_y)
 {
 	EuclideanDis = sqrt(pow((end_x - init_x),2) + pow((end_y - init_y),2));
 	// printf("\033[1;31m EuclideanDis : %f\n \033[0m", EuclideanDis);
-	return EuclideanDis;
+	// return EuclideanDis;
 }
 
 float LK_OpticalFlow::D4Distance(float init_x, float init_y, float end_x, float end_y)
 {
 	D4Dis = abs(end_x - init_x) + abs(end_y - init_y);
 	// printf("\033[1;34m D4Dis : %f\n \033[0m", D4Dis);
-	return D4Dis;
+	// return D4Dis;
 }
 
 // float LK_OpticalFlow::ComputeDistance(float x_o, float y_o, float z_o, float x_t, float y_t, float z_t)

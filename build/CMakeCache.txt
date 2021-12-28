@@ -109,7 +109,7 @@ CATKIN_SKIP_TESTING:BOOL=OFF
 CATKIN_SYMLINK_INSTALL:BOOL=OFF
 
 //List of ';' separated packages to build
-CATKIN_WHITELIST_PACKAGES:STRING=ORBextractor
+CATKIN_WHITELIST_PACKAGES:STRING=
 
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
@@ -380,13 +380,11 @@ OPENNI_LIBRARY:FILEPATH=/usr/lib/libOpenNI.so
 //Value Computed by CMake
 ORBextractor_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/ORBextractor
 
-ORBextractor_DIR:PATH=
-
 //Value Computed by CMake
 ORBextractor_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/ORBextractor
 
 //The directory containing a CMake configuration file for OpenCV.
-OpenCV_DIR:PATH=/usr/local/share/OpenCV
+OpenCV_DIR:PATH=/usr/share/OpenCV
 
 //path to 2d headers
 PCL_2D_INCLUDE_DIR:PATH=/usr/include/pcl-1.8
@@ -762,7 +760,7 @@ gtest_main_LIB_DEPENDS:STATIC=general;-lpthread;general;gtest;
 image_transport_DIR:PATH=/opt/ros/melodic/share/image_transport/cmake
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/melodic/lib/librospack.so
+lib:FILEPATH=/opt/ros/melodic/lib/libtf2.so
 
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/melodic/share/message_filters/cmake
@@ -1035,7 +1033,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=8
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -1085,7 +1083,7 @@ DSSDK_LIBRARY_turbojpeg-ADVANCED:INTERNAL=1
 //Details about finding Flann
 FIND_PACKAGE_MESSAGE_DETAILS_Flann:INTERNAL=[/usr/lib/x86_64-linux-gnu/libflann_cpp_s.a][/usr/include][v()]
 //Details about finding OpenCV
-FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr/local][v3.4.2(3.4.2)]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenCV:INTERNAL=[/usr][v3.2.0(3.2)]
 //Details about finding OpenNI2
 FIND_PACKAGE_MESSAGE_DETAILS_OpenNI2:INTERNAL=[/usr/lib/libOpenNI2.so][/usr/include/openni2][v()]
 //Details about finding PCL

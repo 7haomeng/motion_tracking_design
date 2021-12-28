@@ -17,7 +17,8 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
 )
 
-find_package(OpenCV 3.4.2 REQUIRED)
+# find_package(OpenCV 3.4.2 REQUIRED)
+find_package(OpenCV 3.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
 ## System dependencies are found with CMake's conventions

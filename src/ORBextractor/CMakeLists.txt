@@ -15,13 +15,13 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   cv_bridge
   image_transport
-  ORBextractor
+  # ORBextractor
   # pcl_conversions
   # pcl_ros
   # message_filters
 )
 
-find_package(OpenCV 3.4.2 REQUIRED)
+find_package(OpenCV 3.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -183,6 +183,10 @@ target_link_libraries(ORBextractor_opencv ${catkin_LIBRARIES} ${OpenCV_LIBRARIES
 #   scripts/my_python_script
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
+
+catkin_install_python(PROGRAMS scripts/ORBextractor.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
