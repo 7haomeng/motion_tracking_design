@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(moving_check)
+project(outlier_removal)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -12,12 +12,14 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
-  image_transport
   geometry_msgs
   cv_bridge
+  image_transport
+  message_filters
 )
 
-# find_package(OpenCV 3.4.2 REQUIRED)
+find_package(Boost REQUIRED)
+
 find_package(OpenCV 3.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
@@ -112,7 +114,7 @@ find_package(realsense2 REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES moving_check
+#  LIBRARIES outlier_removal
 #  CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
@@ -126,20 +128,13 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/moving_check.cpp
+#   src/${PROJECT_NAME}/outlier_removal.cpp
 # )
-
-################ execute ######################
-# add_executable(moving_check src/moving_check.cpp)
-# target_link_libraries(moving_check ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-# 
-# add_executable(dynamic_object src/dynamic_object.cpp)
-# target_link_libraries(dynamic_object ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
-################ execute ######################
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -149,7 +144,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/moving_check_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/outlier_removal_node.cpp)
+
+add_executable(outlier_removal src/outlier_removal.cpp)
+target_link_libraries(outlier_removal ${catkin_LIBRARIES} ${Boost_SYSTEM_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -213,7 +211,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_moving_check.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_outlier_removal.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

@@ -18,8 +18,10 @@ find_package(catkin REQUIRED COMPONENTS
   # ORBextractor
   # pcl_conversions
   # pcl_ros
-  # message_filters
+  message_filters
 )
+
+find_package(Boost REQUIRED)
 
 find_package(OpenCV 3.2 REQUIRED)
 find_package(realsense2 REQUIRED)
@@ -153,7 +155,7 @@ include_directories(
 # target_link_libraries(ORBextractor ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 
 add_executable(ORBextractor_opencv src/ORBextractor_opencv.cpp)
-target_link_libraries(ORBextractor_opencv ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
+target_link_libraries(ORBextractor_opencv ${catkin_LIBRARIES} ${Boost_SYSTEM_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

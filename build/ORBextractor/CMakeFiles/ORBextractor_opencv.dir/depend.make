@@ -3,6 +3,7 @@
 
 ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /home/hao/motion_tracking_design/src/ORBextractor/src/ORBextractor_opencv.cpp
 ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /opt/ros/melodic/include/cv_bridge/cv_bridge.h
+ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /opt/ros/melodic/include/geometry_msgs/Point32.h
 ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /opt/ros/melodic/include/image_transport/camera_publisher.h
 ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /opt/ros/melodic/include/image_transport/camera_subscriber.h
 ORBextractor/CMakeFiles/ORBextractor_opencv.dir/src/ORBextractor_opencv.cpp.o: /opt/ros/melodic/include/image_transport/exception.h

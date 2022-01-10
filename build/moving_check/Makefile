@@ -68,26 +68,17 @@ install/strip/fast: preinstall/fast
 	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
-# Special rule for the target edit_cache
-edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
-.PHONY : edit_cache
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
 
-# Special rule for the target edit_cache
-edit_cache/fast: edit_cache
-
-.PHONY : edit_cache/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-
-.PHONY : list_install_components/fast
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
 
 # Special rule for the target test
 test:
@@ -100,17 +91,26 @@ test/fast: test
 
 .PHONY : test/fast
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
 
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
+# Special rule for the target edit_cache
+edit_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+.PHONY : edit_cache
+
+# Special rule for the target edit_cache
+edit_cache/fast: edit_cache
+
+.PHONY : edit_cache/fast
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
@@ -167,6 +167,48 @@ depend:
 	cd /home/hao/motion_tracking_design/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
+# Convenience name for target.
+moving_check/CMakeFiles/moving_check.dir/rule:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f CMakeFiles/Makefile2 moving_check/CMakeFiles/moving_check.dir/rule
+.PHONY : moving_check/CMakeFiles/moving_check.dir/rule
+
+# Convenience name for target.
+moving_check: moving_check/CMakeFiles/moving_check.dir/rule
+
+.PHONY : moving_check
+
+# fast build rule for target.
+moving_check/fast:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/build
+.PHONY : moving_check/fast
+
+src/moving_check.o: src/moving_check.cpp.o
+
+.PHONY : src/moving_check.o
+
+# target to build an object file
+src/moving_check.cpp.o:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.o
+.PHONY : src/moving_check.cpp.o
+
+src/moving_check.i: src/moving_check.cpp.i
+
+.PHONY : src/moving_check.i
+
+# target to preprocess a source file
+src/moving_check.cpp.i:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.i
+.PHONY : src/moving_check.cpp.i
+
+src/moving_check.s: src/moving_check.cpp.s
+
+.PHONY : src/moving_check.s
+
+# target to generate assembly for a file
+src/moving_check.cpp.s:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f moving_check/CMakeFiles/moving_check.dir/build.make moving_check/CMakeFiles/moving_check.dir/src/moving_check.cpp.s
+.PHONY : src/moving_check.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -174,12 +216,16 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... install/strip"
-	@echo "... edit_cache"
-	@echo "... list_install_components"
-	@echo "... test"
 	@echo "... install/local"
+	@echo "... test"
+	@echo "... list_install_components"
+	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... moving_check"
 	@echo "... install"
+	@echo "... src/moving_check.o"
+	@echo "... src/moving_check.i"
+	@echo "... src/moving_check.s"
 .PHONY : help
 
 

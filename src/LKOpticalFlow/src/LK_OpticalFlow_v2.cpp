@@ -31,9 +31,8 @@
 // #include <sensor_msgs/image_encodings.h>
 using namespace ros;
 using namespace std;
-using namespace message_filters;
 using namespace cv;
-// using namespace pcl;
+using namespace message_filters;
 
 typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudXYZRGB;
 typedef pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudXYZRGBPtr;
@@ -252,6 +251,7 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     //     Tracking(dstImage, result);
     // }
     try{
+        // Tracking(rgb_ptr_frame, result);
         Tracking(dstImage, result);
     }catch(cv::Exception& e){
         const char* err_msg = e.what();
@@ -398,15 +398,15 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         if (AcceptTrackedPoint(i))
         {
             EuclideanDis = sqrt(pow((points[0][i].x - points[1][i].x),2) + pow((points[0][i].y - points[1][i].y),2));
-            // if (EuclideanDis > 100){ //0 20 50 100
-            // // printf("%hhu\n",status[i]);
-            // // cout << deltaDist <<endl;
-            // initial[k] = initial[i];
-            // points[1][k++] = points[1][i];
-            // }
-
+            if (EuclideanDis > 100){ //0 20 50 100
+            // printf("%hhu\n",status[i]);
+            // cout << deltaDist <<endl;
             initial[k] = initial[i];
             points[1][k++] = points[1][i];
+            }
+
+            // initial[k] = initial[i];
+            // points[1][k++] = points[1][i];
         }
         // cout << "k_points[1][" << k++ << "]:" << points[1][k++] << endl;
         // cout <<endl;
@@ -424,9 +424,9 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         //     (points[1][i].y) = (points[1][i].y);
         // }
 
-        // line(output, initial[i], points[1][i], Scalar(255, 0, 0));
-        // circle(output, initial[i], 3, Scalar(0, 0, 255), -1);
-        circle(output, points[1][i], 3, Scalar(0, 0, 255), -1);
+        line(output, initial[i], points[1][i], Scalar(255, 0, 0), 1);
+        circle(output, initial[i], 4, Scalar(0, 255, 0), -1);
+        circle(output, points[1][i], 4, Scalar(0, 0, 255), -1);
 
 		// printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m \033[1;31m EuclideanDis : %f \033[0m \033[1;34m D4Dis : %f\n \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y, EuclideanDis, D4Dis);
         

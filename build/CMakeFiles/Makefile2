@@ -1302,22 +1302,59 @@ clean: ORBextractor/CMakeFiles/geometry_msgs_generate_messages_eus.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory moving_check
+# Directory level rules for directory outlier_removal
 
 # Convenience name for "all" pass in the directory.
-moving_check/all:
+outlier_removal/all: outlier_removal/CMakeFiles/outlier_removal.dir/all
 
-.PHONY : moving_check/all
+.PHONY : outlier_removal/all
 
 # Convenience name for "clean" pass in the directory.
-moving_check/clean:
+outlier_removal/clean: outlier_removal/CMakeFiles/outlier_removal.dir/clean
 
-.PHONY : moving_check/clean
+.PHONY : outlier_removal/clean
 
 # Convenience name for "preinstall" pass in the directory.
-moving_check/preinstall:
+outlier_removal/preinstall:
 
-.PHONY : moving_check/preinstall
+.PHONY : outlier_removal/preinstall
+
+#=============================================================================
+# Target rules for target outlier_removal/CMakeFiles/outlier_removal.dir
+
+# All Build rule for target.
+outlier_removal/CMakeFiles/outlier_removal.dir/all:
+	$(MAKE) -f outlier_removal/CMakeFiles/outlier_removal.dir/build.make outlier_removal/CMakeFiles/outlier_removal.dir/depend
+	$(MAKE) -f outlier_removal/CMakeFiles/outlier_removal.dir/build.make outlier_removal/CMakeFiles/outlier_removal.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/hao/motion_tracking_design/build/CMakeFiles --progress-num=16,17 "Built target outlier_removal"
+.PHONY : outlier_removal/CMakeFiles/outlier_removal.dir/all
+
+# Include target in all.
+all: outlier_removal/CMakeFiles/outlier_removal.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+outlier_removal/CMakeFiles/outlier_removal.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hao/motion_tracking_design/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 outlier_removal/CMakeFiles/outlier_removal.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/hao/motion_tracking_design/build/CMakeFiles 0
+.PHONY : outlier_removal/CMakeFiles/outlier_removal.dir/rule
+
+# Convenience name for target.
+outlier_removal: outlier_removal/CMakeFiles/outlier_removal.dir/rule
+
+.PHONY : outlier_removal
+
+# clean rule for target.
+outlier_removal/CMakeFiles/outlier_removal.dir/clean:
+	$(MAKE) -f outlier_removal/CMakeFiles/outlier_removal.dir/build.make outlier_removal/CMakeFiles/outlier_removal.dir/clean
+.PHONY : outlier_removal/CMakeFiles/outlier_removal.dir/clean
+
+# clean rule for target.
+clean: outlier_removal/CMakeFiles/outlier_removal.dir/clean
+
+.PHONY : clean
 
 #=============================================================================
 # Directory level rules for directory LKOpticalFlow
@@ -1401,7 +1438,7 @@ LKOpticalFlow/preinstall:
 LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/all:
 	$(MAKE) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/depend
 	$(MAKE) -f LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build.make LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/hao/motion_tracking_design/build/CMakeFiles --progress-num=18,19 "Built target rgb_pixelValue"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/hao/motion_tracking_design/build/CMakeFiles --progress-num=20,21 "Built target rgb_pixelValue"
 .PHONY : LKOpticalFlow/CMakeFiles/rgb_pixelValue.dir/all
 
 # Include target in all.
@@ -1822,7 +1859,7 @@ clean: LKOpticalFlow/CMakeFiles/tf_generate_messages_py.dir/clean
 LKOpticalFlow/CMakeFiles/point_data.dir/all:
 	$(MAKE) -f LKOpticalFlow/CMakeFiles/point_data.dir/build.make LKOpticalFlow/CMakeFiles/point_data.dir/depend
 	$(MAKE) -f LKOpticalFlow/CMakeFiles/point_data.dir/build.make LKOpticalFlow/CMakeFiles/point_data.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/hao/motion_tracking_design/build/CMakeFiles --progress-num=16,17 "Built target point_data"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/hao/motion_tracking_design/build/CMakeFiles --progress-num=18,19 "Built target point_data"
 .PHONY : LKOpticalFlow/CMakeFiles/point_data.dir/all
 
 # Include target in all.

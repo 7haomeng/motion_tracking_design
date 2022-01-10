@@ -55,6 +55,7 @@ class Prediction:
             os.mkdir(args.savedir)
 
         self.pallete = [[0, 0, 0],
+                [255, 246, 143],
                 [99, 197, 34],
                 [153, 153, 153],
                 [250, 170, 30],
@@ -80,7 +81,7 @@ class Prediction:
                 [0, 0, 0]]
 
         self.img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.predict_cb, queue_size=1)
-        # self.img_sub = rospy.Subscriber('/ORBextractor/image', Image, self.predict_cb)
+        # self.img_sub = rospy.Subscriber('/ORBextractor/image', Image, self.predict_cb, queue_size=1)
         self.predict_pub = rospy.Publisher("/ESPNet_v2/predict_img", Image, queue_size=1)
         self.mask_pub = rospy.Publisher('/ESPNet_v2/mask_img', Image,queue_size=1)
         self.mask_color_pub = rospy.Publisher('/ESPNet_v2/mask_color_img', Image,queue_size=1)
@@ -179,7 +180,7 @@ class Prediction:
                 classMap_numpy_color[classMap_numpy == idx] = [b, g, r]
                 # print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))
                 self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
-                self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "8UC3"))
+                self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8"))
             if args.overlay:
                 overlayed = cv2.addWeighted(img_orig, 1.0, classMap_numpy_color, 0.5, 0)
                 self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8"))

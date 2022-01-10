@@ -623,6 +623,19 @@ geometry_msgs_generate_messages_eus/fast:
 .PHONY : geometry_msgs_generate_messages_eus/fast
 
 #=============================================================================
+# Target rules for targets named outlier_removal
+
+# Build rule for target.
+outlier_removal: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 outlier_removal
+.PHONY : outlier_removal
+
+# fast build rule for target.
+outlier_removal/fast:
+	$(MAKE) -f outlier_removal/CMakeFiles/outlier_removal.dir/build.make outlier_removal/CMakeFiles/outlier_removal.dir/build
+.PHONY : outlier_removal/fast
+
+#=============================================================================
 # Target rules for targets named rgb_pixelValue
 
 # Build rule for target.
@@ -1398,6 +1411,7 @@ help:
 	@echo "... geometry_msgs_generate_messages_lisp"
 	@echo "... geometry_msgs_generate_messages_nodejs"
 	@echo "... geometry_msgs_generate_messages_eus"
+	@echo "... outlier_removal"
 	@echo "... rgb_pixelValue"
 	@echo "... tf2_msgs_generate_messages_nodejs"
 	@echo "... tf2_msgs_generate_messages_py"

@@ -7,5 +7,5 @@
 subdirs("gtest")
 subdirs("segmentation")
 subdirs("ORBextractor")
-subdirs("moving_check")
+subdirs("outlier_removal")
 subdirs("LKOpticalFlow")
