@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/hao/motion_tracking_design/src/outlier_removal/src/outlier_removal.cpp" "/home/hao/motion_tracking_design/build/outlier_removal/CMakeFiles/outlier_removal.dir/src/outlier_removal.cpp.o"
+  "/home/alvisliu/motion_tracking_design/src/outlier_removal/src/outlier_removal.cpp" "/home/alvisliu/motion_tracking_design/build/outlier_removal/CMakeFiles/outlier_removal.dir/src/outlier_removal.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -20,12 +20,8 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/opt/ros/melodic/include"
   "/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/opencv"
-  "/usr/local/include"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
   )
-
-# Fortran module output directory.
-set(CMAKE_Fortran_TARGET_MODULE_DIR "")

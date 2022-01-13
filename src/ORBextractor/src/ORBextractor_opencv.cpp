@@ -78,7 +78,14 @@ public:
     void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
     void RGB_img_Callback(const sensor_msgs::ImageConstPtr&);
     void predict_img_Callback(const sensor_msgs::ImageConstPtr&);
-    void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&);
+    // void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&);
+    void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg, const sensor_msgs::ImageConstPtr& maskimg_msg)
+    {
+        cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
+        cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
+        cout << endl;
+        cout << "OK" << endl;
+    }
     void RemoveOutlier(Mat &, Mat &, vector<KeyPoint> &);
 
     ros::Subscriber RGB_img_sub;
@@ -100,7 +107,7 @@ ORB_extractor::ORB_extractor(ros::NodeHandle nh){
 
     img_sub.subscribe(nh, "/camera/color/image_raw", 1);
     mask_sub.subscribe(nh, "/ESPNet_v2/mask_img", 1);
-    sync.reset(new OutlierRemovalSynchronizer(OutlierRemovalSyncPolicy(10), img_sub, mask_sub));
+    sync.reset(new OutlierRemovalSynchronizer(OutlierRemovalSyncPolicy(100), img_sub, mask_sub));
     sync->registerCallback(boost::bind(&ORB_extractor::OutlierRemoval_Callback, this, _1, _2));
 
     // RGB_img_sub = nh.subscribe("/camera/color/image_raw", 1, &ORB_extractor::RGB_img_Callback,this);
@@ -120,23 +127,23 @@ ORB_extractor::ORB_extractor(ros::NodeHandle nh){
 ORB_extractor::~ORB_extractor(){
 }
 
-void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg, const sensor_msgs::ImageConstPtr& maskimg_msg){
-    cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
-    cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
-    cout << endl;
-}
+// void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg, const sensor_msgs::ImageConstPtr& maskimg_msg){
+//     cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
+//     cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
+//     cout << endl;
+// }
 
 void ORB_extractor::mask_img_Callback(const sensor_msgs::ImageConstPtr& maskimg_msg){
     cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
 }
 
 void ORB_extractor::RGB_img_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg){
-    RGB_frame = cv_bridge::toCvCopy(RGBimg_msg, "bgr8")->image;
-    assert(RGB_frame.data != nullptr);
-    mImGray = RGB_frame;
-    cvtColor(mImGray, mImGray, CV_RGB2GRAY);
+    // RGB_frame = cv_bridge::toCvCopy(RGBimg_msg, "bgr8")->image;
+    // assert(RGB_frame.data != nullptr);
+    // mImGray = RGB_frame;
+    // cvtColor(mImGray, mImGray, CV_RGB2GRAY);
 
-    cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
+    cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp.sec << endl;
 
     // vector<KeyPoint> keypoints_1, keypoints_2;
     // Mat descriptors_1, descriptors_2;
@@ -147,9 +154,9 @@ void ORB_extractor::RGB_img_Callback(const sensor_msgs::ImageConstPtr& RGBimg_ms
     detector->detect(mImGray, keypoints_1);
     descriptor->compute(mImGray, keypoints_1, descriptors_1);
 
-    drawKeypoints(RGB_frame, keypoints_1, outimg1, Scalar(0, 255, 0), DrawMatchesFlags::DEFAULT);
-    output_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", outimg1).toImageMsg();
-    output_image_pub.publish(output_image);
+    // drawKeypoints(RGB_frame, keypoints_1, outimg1, Scalar(0, 255, 0), DrawMatchesFlags::DEFAULT);
+    // output_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", outimg1).toImageMsg();
+    // output_image_pub.publish(output_image);
 }
 
 void ORB_extractor::predict_img_Callback(const sensor_msgs::ImageConstPtr& predict_img_msg){

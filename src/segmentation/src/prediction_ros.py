@@ -3,6 +3,7 @@
 import rospy
 import rospkg
 from sensor_msgs.msg import Image
+from std_msgs.msg import Header
 
 import numpy as np
 import torch
@@ -36,6 +37,7 @@ class Prediction:
         self.mask_msgs = Image()
         self.mask_color_msgs = Image()
         self.predict_msgs = Image()
+        self.msg_t = Header()
 
         self.cv_bridge = CvBridge()
 
@@ -92,7 +94,10 @@ class Prediction:
 
     def predict_cb(self, msg):
         cv_image = self.cv_bridge.imgmsg_to_cv2(msg, "bgr8")    # Convert ros image topic to cv_image
-        self.evaluateModel(args, self.modelA, cv_image)
+        self.msg_t = msg.header
+        self.evaluateModel(args, self.modelA, cv_image, self.msg_t)
+        # print(msg.header.stamp.secs)
+        # self.timestamp_rs = msg.header.stamp.secs
         # predict = self.evaluateModel(args, self.modelA, cv_image)
         # mask = self.evaluateModel(args, self.modelA, cv_image)
         # self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(predict, "bgr8"))
@@ -129,7 +134,7 @@ class Prediction:
         return img
 
 
-    def evaluateModel(self, args, model, image):
+    def evaluateModel(self, args, model, image, t):
         # gloabl mean and std values
 
         mean = [107.82763, 108.5122, 112.27358]
@@ -165,7 +170,7 @@ class Prediction:
 
         stop = timeit.default_timer()
         # print("The num of rgb_img: {0}".format(i))
-        print("Time: {0}".format(stop-start))
+        # print("Time: {0}".format(stop-start))
         # rospy.loginfo("Time: {0}".format((stop-start)))
         # rospy.loginfo("fps: {0}\n".format(1/(stop-start)))
         classMap_numpy = img_out[0].max(0)[1].byte().cpu().data.numpy()
@@ -185,12 +190,14 @@ class Prediction:
                 classMap_numpy_color[classMap_numpy == idx] = [b, g, r]
                 # print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))
                 self.mask_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1")
-                self.mask_msgs.header.stamp = rospy.Time.now()
-                # print("timestamp: {0}".format(self.mask_msgs.header.stamp))
+                # self.mask_msgs.header.stamp = rospy.Time.now()
+                self.mask_msgs.header = t
+                # print("timestamp: {0}".format(self.mask_msgs.header.stamp.secs))
                 self.mask_pub.publish(self.mask_msgs)
                 # self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
                 self.mask_color_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8")
                 self.mask_color_msgs.header.stamp = rospy.Time.now()
+                # self.mask_color_msgs.header.stamp = self.timestamp_rs
                 self.mask_color_pub.publish(self.mask_color_msgs)
                 # self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8"))
             if args.overlay:
