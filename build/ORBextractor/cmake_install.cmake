@@ -52,7 +52,3 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ORBextractor" TYPE FILE FILES "/home/hao/motion_tracking_design/src/ORBextractor/package.xml")
 endif()
 
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/ORBextractor" TYPE PROGRAM FILES "/home/hao/motion_tracking_design/build/ORBextractor/catkin_generated/installspace/ORBextractor.py")
-endif()
-

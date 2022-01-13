@@ -135,6 +135,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/hao/motion_tracking_design/build/ORBextractor/cmake_install.cmake")
   include("/home/hao/motion_tracking_design/build/outlier_removal/cmake_install.cmake")
   include("/home/hao/motion_tracking_design/build/LKOpticalFlow/cmake_install.cmake")
+  include("/home/hao/motion_tracking_design/build/view_trajectory/cmake_install.cmake")
 
 endif()
 

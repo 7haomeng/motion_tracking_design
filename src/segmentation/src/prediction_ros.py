@@ -33,6 +33,10 @@ __maintainer__ = "Sachin Mehta"
 
 class Prediction:
     def __init__(self, args):
+        self.mask_msgs = Image()
+        self.mask_color_msgs = Image()
+        self.predict_msgs = Image()
+
         self.cv_bridge = CvBridge()
 
         self.modelA = net.EESPNet_Seg(args.classes, s=args.s)
@@ -170,6 +174,7 @@ class Prediction:
         # if i % 100 == 0 and i > 0:
             # print('Processed [{}/{}]'.format(i, len(image_list)))
         # name = image.split('/')[-1]
+        # print("timestamp: {0}".format(self.mask_msgs.header.stamp))
 
         if args.colored:
             classMap_numpy_color = np.zeros((img.shape[1], img.shape[2], img.shape[0]), dtype=np.uint8)
@@ -179,11 +184,21 @@ class Prediction:
                 # print("classMap_numpy: {0}, shape: {1}, size: {2}".format(np.unique(classMap_numpy), classMap_numpy.shape, classMap_numpy.size))
                 classMap_numpy_color[classMap_numpy == idx] = [b, g, r]
                 # print("classMap_numpy_color: {0}, shape: {1}, size: {2}\n".format(np.unique(classMap_numpy_color), classMap_numpy_color.shape, classMap_numpy_color.size))
-                self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
-                self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8"))
+                self.mask_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1")
+                self.mask_msgs.header.stamp = rospy.Time.now()
+                # print("timestamp: {0}".format(self.mask_msgs.header.stamp))
+                self.mask_pub.publish(self.mask_msgs)
+                # self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
+                self.mask_color_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8")
+                self.mask_color_msgs.header.stamp = rospy.Time.now()
+                self.mask_color_pub.publish(self.mask_color_msgs)
+                # self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8"))
             if args.overlay:
                 overlayed = cv2.addWeighted(img_orig, 1.0, classMap_numpy_color, 0.5, 0)
-                self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8"))
+                self.predict_msgs = self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8")
+                self.predict_msgs.header.stamp = rospy.Time.now()
+                self.predict_pub.publish(self.predict_msgs)
+                # self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8"))
         if args.cityFormat:
             classMap_numpy = self.relabel(classMap_numpy.astype(np.uint8))
 

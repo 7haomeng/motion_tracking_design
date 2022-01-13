@@ -15,6 +15,11 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/types.hpp>
 
+#include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
+#include <message_filters/time_synchronizer.h>
+
 #include <vector>
 #include <list>
 #include <opencv/cv.h>
@@ -22,13 +27,18 @@
 using namespace ros;
 using namespace std;
 // using namespace message_filters;
+// using namespace sensor_msgs;
 using namespace cv;
 
+// typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> MySyncPolicy;
+typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> OutlierRemovalSyncPolicy;
+typedef message_filters::Synchronizer<OutlierRemovalSyncPolicy> OutlierRemovalSynchronizer;
 
 class ORB_extractor{
 private:
     // ORBextractor* mpIniORBextractor;
     ros::NodeHandle mask_nh;
+    ros::NodeHandle nh_, pnh_;
     unsigned int i_;
     int i , j;
     int index = 0,orb_index = 0;
@@ -60,12 +70,19 @@ private:
 public:
     ORB_extractor(ros::NodeHandle);
     ~ORB_extractor();
+
+    message_filters::Subscriber<sensor_msgs::Image> img_sub;
+    message_filters::Subscriber<sensor_msgs::Image> mask_sub;
+    boost::shared_ptr<OutlierRemovalSynchronizer> sync;
+
+    void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
     void RGB_img_Callback(const sensor_msgs::ImageConstPtr&);
     void predict_img_Callback(const sensor_msgs::ImageConstPtr&);
-    void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr&);
+    void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&);
     void RemoveOutlier(Mat &, Mat &, vector<KeyPoint> &);
 
     ros::Subscriber RGB_img_sub;
+    ros::Subscriber mask_img_sub;
     ros::Subscriber predict_img_sub;
     // ros::Subscriber mask_img_sub;
     ros::Publisher keypoints_1_pub;
@@ -75,14 +92,27 @@ public:
 };
 
 ORB_extractor::ORB_extractor(ros::NodeHandle nh){
-    RGB_img_sub = nh.subscribe("/camera/color/image_raw", 1, &ORB_extractor::RGB_img_Callback,this);
-    predict_img_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &ORB_extractor::predict_img_Callback,this);
+    // message_filters::Subscriber<sensor_msgs::Image> img_sub(nh, "/camera/color/image_raw", 1);
+    // message_filters::Subscriber<sensor_msgs::Image> mask_sub(nh, "/ESPNet_v2/mask_img", 1);
+    // message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image> sync(img_sub, mask_sub, 10);
+    // message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), img_sub, mask_sub);
+    // sync.registerCallback(boost::bind(&ORB_extractor::OutlierRemoval_Callback, this, _1, _2));
+
+    img_sub.subscribe(nh, "/camera/color/image_raw", 1);
+    mask_sub.subscribe(nh, "/ESPNet_v2/mask_img", 1);
+    sync.reset(new OutlierRemovalSynchronizer(OutlierRemovalSyncPolicy(10), img_sub, mask_sub));
+    sync->registerCallback(boost::bind(&ORB_extractor::OutlierRemoval_Callback, this, _1, _2));
+
+    // RGB_img_sub = nh.subscribe("/camera/color/image_raw", 1, &ORB_extractor::RGB_img_Callback,this);
+    // predict_img_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &ORB_extractor::predict_img_Callback,this);
+    // mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &ORB_extractor::mask_img_Callback,this);
     // predict_img_sub = nh.subscribe("/ESPNet_v2/mask_color_img", 1, &ORB_extractor::predict_img_Callback,this);
+    // predict_img_sub = nh.subscribe("moving_check/camera/motion_image", 1, &ORB_extractor::predict_img_Callback,this);
     // mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &ORB_extractor::OutlierRemoval_Callback,this);
-    keypoints_1_pub = nh.advertise<geometry_msgs::Point32>("/ORBextractor/keypoints", 1);
-    output_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/image", 1);
-    predict_output_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/predict_image", 1);
-    remove_outlier_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/removeoutlier_image", 1);
+    // keypoints_1_pub = nh.advertise<geometry_msgs::Point32>("/ORBextractor/keypoints", 1);
+    // output_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/image", 1);
+    // predict_output_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/predict_image", 1);
+    // remove_outlier_image_pub = nh.advertise<sensor_msgs::Image>("/ORBextractor/removeoutlier_image", 1);
 
     mask_nh = nh;
 }
@@ -90,11 +120,23 @@ ORB_extractor::ORB_extractor(ros::NodeHandle nh){
 ORB_extractor::~ORB_extractor(){
 }
 
+void OutlierRemoval_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg, const sensor_msgs::ImageConstPtr& maskimg_msg){
+    cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
+    cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
+    cout << endl;
+}
+
+void ORB_extractor::mask_img_Callback(const sensor_msgs::ImageConstPtr& maskimg_msg){
+    cout << "mask_msg timestamp : " << maskimg_msg->header.stamp << endl;
+}
+
 void ORB_extractor::RGB_img_Callback(const sensor_msgs::ImageConstPtr& RGBimg_msg){
     RGB_frame = cv_bridge::toCvCopy(RGBimg_msg, "bgr8")->image;
     assert(RGB_frame.data != nullptr);
     mImGray = RGB_frame;
     cvtColor(mImGray, mImGray, CV_RGB2GRAY);
+
+    cout << "rgb_msg timestamp : " << RGBimg_msg->header.stamp << endl;
 
     // vector<KeyPoint> keypoints_1, keypoints_2;
     // Mat descriptors_1, descriptors_2;
@@ -119,6 +161,9 @@ void ORB_extractor::predict_img_Callback(const sensor_msgs::ImageConstPtr& predi
     boost::shared_ptr<sensor_msgs::Image const> mask_ptr;
     mask_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/ESPNet_v2/mask_img",mask_nh);
     mask_ptr_frame = cv_bridge::toCvCopy(mask_ptr, "8UC1")->image;
+
+    cout << predict_img_msg << endl;
+    cout << endl;
 
     detector = ORB::create();
     descriptor = ORB::create();
@@ -175,7 +220,7 @@ void ORB_extractor::RemoveOutlier(Mat &frame, Mat &outimg2, vector<KeyPoint> &ke
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "ORBextractor");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh, pnh("~");
     ORB_extractor ORB_extractor(nh);
     ros::spin();
 }

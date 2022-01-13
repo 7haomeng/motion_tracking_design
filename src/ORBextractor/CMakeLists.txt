@@ -22,7 +22,6 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Boost REQUIRED)
-
 find_package(OpenCV 3.2 REQUIRED)
 find_package(realsense2 REQUIRED)
 
@@ -116,7 +115,7 @@ find_package(realsense2 REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES ORBextractor
 #  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
@@ -128,9 +127,10 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include)
+# include_directories(include)
 include_directories(
   # include
+  ${Boost_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
 )
@@ -155,7 +155,13 @@ include_directories(
 # target_link_libraries(ORBextractor ${catkin_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
 
 add_executable(ORBextractor_opencv src/ORBextractor_opencv.cpp)
-target_link_libraries(ORBextractor_opencv ${catkin_LIBRARIES} ${Boost_SYSTEM_LIBRARIES} ${OpenCV_LIBRARIES} ${realsense2_LIBRARY})
+target_link_libraries(ORBextractor_opencv
+  ${catkin_LIBRARIES} 
+  ${Boost_SYSTEM_LIBRARIES} 
+  ${OpenCV_LIBRARIES} 
+  ${realsense2_LIBRARY}
+)
+
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -186,9 +192,9 @@ target_link_libraries(ORBextractor_opencv ${catkin_LIBRARIES} ${Boost_SYSTEM_LIB
 #   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
-catkin_install_python(PROGRAMS scripts/ORBextractor.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
+# catkin_install_python(PROGRAMS scripts/ORBextractor.py
+#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html

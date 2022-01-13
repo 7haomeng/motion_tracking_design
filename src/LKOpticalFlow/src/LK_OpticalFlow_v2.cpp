@@ -176,7 +176,7 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 	// output_image_pub = it.advertise("lk/camera/LK_OpticalFlow_image", 1);
     // output_image_pub = it.advertise("moving_check/camera/semantic_opticalflow_image", 1);
     output_image_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/semantic_opticalflow_image", 1);
-    output_tstimg_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/mask_test_image", 1);
+    output_tstimg_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/motion_image", 1);
 
     //cv::namedWindow(window_name);
 	const int width = 640; // 設定影像尺寸(寬w，高h)
@@ -243,7 +243,7 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     // cout << "dstImage: " << dstImage << endl;
     // cout << "**********************************************" << endl;
 
-    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", dstImage).toImageMsg();
+    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", dstImage).toImageMsg();
 	output_tstimg_pub.publish(output_tstimage);
     
     // Tracking(dstImage, result);

@@ -146,3 +146,16 @@
 /home/hao/motion_tracking_design/build/LKOpticalFlow/CMakeFiles/dynamic_reconfigure_gencfg.dir
 /home/hao/motion_tracking_design/build/LKOpticalFlow/CMakeFiles/topic_tools_generate_messages_py.dir
 /home/hao/motion_tracking_design/build/LKOpticalFlow/CMakeFiles/tf_generate_messages_lisp.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/install/strip.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/install.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/rebuild_cache.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/edit_cache.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/install/local.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/test.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/nav_msgs_generate_messages_eus.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/list_install_components.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/nav_msgs_generate_messages_nodejs.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/trajectory.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/nav_msgs_generate_messages_cpp.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/nav_msgs_generate_messages_lisp.dir
+/home/hao/motion_tracking_design/build/view_trajectory/CMakeFiles/nav_msgs_generate_messages_py.dir

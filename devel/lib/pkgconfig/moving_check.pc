@@ -1,8 +1,0 @@
-prefix=/home/hao/motion_tracking_design/devel
-
-Name: moving_check
-Description: Description of moving_check
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
