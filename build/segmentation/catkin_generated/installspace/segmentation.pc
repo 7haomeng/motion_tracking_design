@@ -1,4 +1,4 @@
-prefix=/home/alvisliu/motion_tracking_design/install
+prefix=/home/hao/motion_tracking_design/install
 
 Name: segmentation
 Description: Description of segmentation

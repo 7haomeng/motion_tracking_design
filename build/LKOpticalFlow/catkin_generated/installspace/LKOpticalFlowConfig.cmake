@@ -67,14 +67,14 @@ set(LKOpticalFlow_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(LKOpticalFlow_SOURCE_PREFIX /home/alvisliu/motion_tracking_design/src/LKOpticalFlow)
-  set(LKOpticalFlow_DEVEL_PREFIX /home/alvisliu/motion_tracking_design/devel)
+  set(LKOpticalFlow_SOURCE_PREFIX /home/hao/motion_tracking_design/src/LKOpticalFlow)
+  set(LKOpticalFlow_DEVEL_PREFIX /home/hao/motion_tracking_design/devel)
   set(LKOpticalFlow_INSTALL_PREFIX "")
   set(LKOpticalFlow_PREFIX ${LKOpticalFlow_DEVEL_PREFIX})
 else()
   set(LKOpticalFlow_SOURCE_PREFIX "")
   set(LKOpticalFlow_DEVEL_PREFIX "")
-  set(LKOpticalFlow_INSTALL_PREFIX /home/alvisliu/motion_tracking_design/install)
+  set(LKOpticalFlow_INSTALL_PREFIX /home/hao/motion_tracking_design/install)
   set(LKOpticalFlow_PREFIX ${LKOpticalFlow_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/alvisliu/motion_tracking_design/install/lib;/home/alvisliu/yumi_depends_ws/devel/lib;/home/alvisliu/ws_moveit/devel/lib;/opt/ros/melodic/lib)
+    foreach(path /home/hao/motion_tracking_design/install/lib;/opt/ros/melodic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

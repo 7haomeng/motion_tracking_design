@@ -1,2 +1,2 @@
 LKOpticalFlow:ORBextractor:outlier_removal:segmentation:view_trajectory
--DCATKIN_DEVEL_PREFIX=/home/alvisliu/motion_tracking_design/devel -DCMAKE_INSTALL_PREFIX=/home/alvisliu/motion_tracking_design/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/home/hao/motion_tracking_design/devel -DCMAKE_INSTALL_PREFIX=/home/hao/motion_tracking_design/install -G Unix Makefiles

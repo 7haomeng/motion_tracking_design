@@ -1,4 +1,4 @@
-prefix=/home/alvisliu/motion_tracking_design/devel
+prefix=/home/hao/motion_tracking_design/devel
 
 Name: view_trajectory
 Description: Description of view_trajectory

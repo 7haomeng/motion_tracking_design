@@ -192,7 +192,7 @@ class Prediction:
                 self.mask_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1")
                 # self.mask_msgs.header.stamp = rospy.Time.now()
                 self.mask_msgs.header = t
-                # print("timestamp: {0}".format(self.mask_msgs.header.stamp.secs))
+                print("timestamp: {0}".format(self.mask_msgs.header.stamp.secs))
                 self.mask_pub.publish(self.mask_msgs)
                 # self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
                 self.mask_color_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8")

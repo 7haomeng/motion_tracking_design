@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
   "CMakeFiles/outlier_removal.dir/src/outlier_removal.cpp.o"
-  "/home/alvisliu/motion_tracking_design/devel/lib/outlier_removal/outlier_removal.pdb"
-  "/home/alvisliu/motion_tracking_design/devel/lib/outlier_removal/outlier_removal"
+  "/home/hao/motion_tracking_design/devel/lib/outlier_removal/outlier_removal.pdb"
+  "/home/hao/motion_tracking_design/devel/lib/outlier_removal/outlier_removal"
 )
 
 # Per-language clean rules from dependency scanning.
