@@ -1,0 +1,8 @@
+prefix=/home/hao/motion_tracking_design/devel
+
+Name: orbtest
+Description: Description of orbtest
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

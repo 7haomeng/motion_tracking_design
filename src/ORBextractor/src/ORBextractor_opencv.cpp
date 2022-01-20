@@ -33,8 +33,8 @@ typedef message_filters::Synchronizer<OutlierRemovalSyncPolicy> OutlierRemovalSy
 
 class ORB_extractor{
 private:
-    // ORBextractor* mpIniORBextractor;
     unsigned int i_;
+    int cnt = 0;
     int r , c;
     int index = 0,orb_index = 0;
     int index_x = 0,index_orb_x = 0,index_y = 0,index_orb_y = 0;
@@ -42,6 +42,7 @@ private:
     int mask_label;
     int channels,orb_channels;
     float tst = 0;
+    bool check = false;
     size_t rows, cols,orb_rows, orb_cols;
     uchar* data;
     Mat result;
@@ -49,6 +50,7 @@ private:
     Mat rs_img,predict_frame;
     Mat mImGray,predict_mImGray;
     Mat outimg1,predict_outimg,outimg2;
+    Mat element;
     vector<KeyPoint> keypoints_1, predict_keypoints_1, keypoints_2;
     Point2f outlier_points;
     Mat descriptors_1, predict_descriptors_1, descriptors_2;
@@ -87,6 +89,8 @@ public:
     {
         rs_img = cv_bridge::toCvCopy(RGBimg_ptr, "bgr8")->image;
         mask_img = cv_bridge::toCvCopy(maskimg_ptr, "8UC1")->image;
+        element = getStructuringElement(MORPH_RECT, Size(8, 8));
+        dilate(mask_img, mask_img, element);
         RemoveOutlier(rs_img, mask_img);
 
         // cout << "rgb_msg timestamp : " << RGBimg_ptr->header.stamp << endl;
@@ -155,36 +159,49 @@ void ORB_extractor::RemoveOutlier(Mat RGB_frame, Mat mask_frame){
     //     cout << "KeyPoints : " << (*it).pt << endl;
     // }
     
-    drawKeypoints(RGB_frame, keypoints_1, outimg1, Scalar(0, 255, 0), DrawMatchesFlags::DEFAULT);
-    output_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", outimg1).toImageMsg();
-    output_image_pub.publish(output_image);
+    // drawKeypoints(RGB_frame, keypoints_1, outimg1, Scalar(0, 255, 0), DrawMatchesFlags::DEFAULT);
+    // output_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", outimg1).toImageMsg();
+    // output_image_pub.publish(output_image);
 
-    for(vector<KeyPoint>::iterator it = keypoints_1.begin(); it != keypoints_1.end(); it++){
         // cout << "Keypoints [x,y] : [" << (*it).pt.x << "," << (*it).pt.y << "]" << endl;
+    for(vector<KeyPoint>::iterator it = keypoints_1.begin(); it != keypoints_1.end(); ++it){
+        cnt++;
+        // cout << cnt << "." << &(*it) <<endl;
+        // cout << cnt << ". Keypoints : " << (*it).pt << endl;
+        check = true;
         for (r = 0; r <rows; r++){
-            data = mask_frame.ptr<uchar>(r);
-            for(c = 0; c < cols * mask_frame.channels(); c++){
-                index = 640 * r + c;
-                mask_label = int(data[c]);
-                if(mask_label == 1){
-                    index_x = c;
-                    index_y = r;
-                    // cout << "Pixel [x,y] : [" << index_x << "," << index_y << "]" << endl;
-                    if ((index_x == (*it).pt.x) && index_y == ((*it).pt.y)){
-                        // cout << "okok" << endl;
-                        cout << "Pixel Erase [x,y] : [" << index_x << "," << index_y << "]" << endl;
-                        cout << "Keypoints Erase [x,y] : " << (*it).pt << endl;
-                        // cout << endl;
-                        keypoints_1.erase(it);
-                        it = keypoints_1.begin();
-                        cout << "okok" << endl;
-                        cout << endl;
-                    }                    
+            if (check == false){
+                break;
+            }else{
+                data = mask_frame.ptr<uchar>(r);
+                for(c = 0; c < cols * mask_frame.channels(); c++){
+                    if (check == false){
+                        break;
+                    }else{
+                        index = 640 * r + c;
+                        mask_label = int(data[c]);
+                        if(mask_label == 1){
+                            index_x = c;
+                            index_y = r;
+                            // cout << cnt << ". Pixel [x,y] : [" << index_x << "," << index_y << "]" << endl;
+                            if ((index_x == (int)((*it).pt.x)) && index_y == (int)((*it).pt.y)){
+                                // cnt++;
+                                // cout << cnt << "." << &(*it) <<endl;
+                                // cout << cnt << ". Pixel Erase [x,y] : [" << index_x << "," << index_y << "]" << endl;
+                                // cout << cnt << ". Keypoints Erase [x,y] : " << (*it).pt << endl;
+                                // cout << endl;
+                                --(it = keypoints_1.erase(it));
+                                // it = keypoints_1.erase(it);
+                                check = false;
+                            }    
+                        }
+                    }
+
                 }
             }
-        }
-        // cout << "Keypoints [x,y] : " << (*it).pt << endl;
+        }   
     }
+
     drawKeypoints(RGB_frame, keypoints_1, outimg2, Scalar(0, 0, 255), DrawMatchesFlags::DEFAULT);
     remove_outlier_image = cv_bridge::CvImage(std_msgs::Header(), "bgr8", outimg2).toImageMsg();
     remove_outlier_image_pub.publish(remove_outlier_image);

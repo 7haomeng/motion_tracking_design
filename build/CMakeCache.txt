@@ -781,6 +781,12 @@ nodelet_DIR:PATH=/opt/ros/melodic/share/nodelet/cmake
 nodelet_topic_tools_DIR:PATH=/opt/ros/melodic/share/nodelet_topic_tools/cmake
 
 //Value Computed by CMake
+orbtest_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/orbtest
+
+//Value Computed by CMake
+orbtest_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/orbtest
+
+//Value Computed by CMake
 outlier_removal_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/outlier_removal
 
 //Value Computed by CMake
@@ -1042,7 +1048,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=9
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=10
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

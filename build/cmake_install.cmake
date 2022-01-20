@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/hao/motion_tracking_design/build/gtest/cmake_install.cmake")
+  include("/home/hao/motion_tracking_design/build/orbtest/cmake_install.cmake")
   include("/home/hao/motion_tracking_design/build/segmentation/cmake_install.cmake")
   include("/home/hao/motion_tracking_design/build/ORBextractor/cmake_install.cmake")
   include("/home/hao/motion_tracking_design/build/outlier_removal/cmake_install.cmake")
