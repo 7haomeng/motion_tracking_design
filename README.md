@@ -22,16 +22,16 @@ roslaunch LKOpticalFlow LK_OpticalFlow.launch
 ## YOLACT
 * Follow the step from https://github.com/dbolya/yolact
 * Implement the YOLACT with ROS
-** Set miniconda environment
-```
-set_conda
-conda activate <env-name> #start up
-conda deactivate <env-name> #close
-```
-** Implement the YOLACT with realsense D435
-```
-roslaunch yolact_ros yolact_ros.launch
-```
+	Set miniconda environment
+	```
+	set_conda
+	conda activate <env-name> #start up
+	conda deactivate <env-name> #close
+	```
+	Implement the YOLACT with realsense D435
+	```
+	roslaunch yolact_ros yolact_ros.launch
+	```
 
 ## ESPNetv2_pytorch
 
