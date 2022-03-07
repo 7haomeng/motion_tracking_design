@@ -19,7 +19,7 @@ roslaunch LKOpticalFlow LK_OpticalFlow.launch
 ## LabelMe
 * Follow the step from https://github.com/wkentaro/labelme
 
-## YOLACT
+## YOLACT (For Instance Segmentation)
 * Follow the step from https://github.com/dbolya/yolact
 * Implement the YOLACT with ROS
 	* Set miniconda environment
@@ -33,7 +33,7 @@ roslaunch LKOpticalFlow LK_OpticalFlow.launch
 	roslaunch yolact_ros yolact_ros.launch
 	```
 
-## ESPNetv2_pytorch
+## ESPNetv2_pytorch (For Semantic Segmentation)
 
 * Set miniconda environment
 ```
