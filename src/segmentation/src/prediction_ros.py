@@ -88,9 +88,9 @@ class Prediction:
 
         self.img_sub = rospy.Subscriber('/camera/color/image_raw', Image, self.predict_cb, queue_size=1)
         # self.img_sub = rospy.Subscriber('/ORBextractor/image', Image, self.predict_cb, queue_size=1)
-        self.predict_pub = rospy.Publisher("/ESPNet_v2/predict_img", Image, queue_size=1)
-        self.mask_pub = rospy.Publisher('/ESPNet_v2/mask_img', Image,queue_size=1)
-        self.mask_color_pub = rospy.Publisher('/ESPNet_v2/mask_color_img', Image,queue_size=1)
+        self.predict_pub = rospy.Publisher("/ESPNet_v2/color/predict_image", Image, queue_size=1)
+        self.mask_pub = rospy.Publisher('/ESPNet_v2/mask/image', Image,queue_size=1)
+        self.mask_color_pub = rospy.Publisher('/ESPNet_v2/mask/color_image', Image,queue_size=1)
 
     def predict_cb(self, msg):
         cv_image = self.cv_bridge.imgmsg_to_cv2(msg, "bgr8")    # Convert ros image topic to cv_image
@@ -192,18 +192,21 @@ class Prediction:
                 self.mask_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1")
                 # self.mask_msgs.header.stamp = rospy.Time.now()
                 self.mask_msgs.header = t
-                print("timestamp: {0}".format(self.mask_msgs.header.stamp.secs))
+                print("mask_msgs timestamp: {0}".format(self.mask_msgs.header.stamp.secs))
                 self.mask_pub.publish(self.mask_msgs)
                 # self.mask_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy, "8UC1"))
                 self.mask_color_msgs = self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8")
-                self.mask_color_msgs.header.stamp = rospy.Time.now()
+                self.mask_color_msgs.header = t
+                # self.mask_color_msgs.header.stamp = rospy.Time.now()
                 # self.mask_color_msgs.header.stamp = self.timestamp_rs
                 self.mask_color_pub.publish(self.mask_color_msgs)
                 # self.mask_color_pub.publish(self.cv_bridge.cv2_to_imgmsg(classMap_numpy_color, "bgr8"))
             if args.overlay:
                 overlayed = cv2.addWeighted(img_orig, 1.0, classMap_numpy_color, 0.5, 0)
                 self.predict_msgs = self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8")
-                self.predict_msgs.header.stamp = rospy.Time.now()
+                self.predict_msgs.header = t
+                print("predict_msgs timestamp: {0}\n".format(self.predict_msgs.header.stamp.secs))
+                # self.predict_msgs.header.stamp = rospy.Time.now()
                 self.predict_pub.publish(self.predict_msgs)
                 # self.predict_pub.publish(self.cv_bridge.cv2_to_imgmsg(overlayed, "bgr8"))
         if args.cityFormat:

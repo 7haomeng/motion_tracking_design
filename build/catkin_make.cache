@@ -1,2 +1,2 @@
-LKOpticalFlow:ORBextractor:orbtest:outlier_removal:segmentation:view_trajectory
+LKOpticalFlow:LKOpticalFlow_msgs:ORBextractor:orbtest:outlier_removal:segmentation:view_trajectory:yolact_ros:yolact_ros_msgs
 -DCATKIN_DEVEL_PREFIX=/home/hao/motion_tracking_design/devel -DCMAKE_INSTALL_PREFIX=/home/hao/motion_tracking_design/install -G Unix Makefiles

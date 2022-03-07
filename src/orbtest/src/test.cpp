@@ -111,12 +111,13 @@ void RemoveOutlier(Mat RGB_frame, Mat mask_frame){
 
     drawKeypoints(RGB_frame, keypoints_1, outimg1, Scalar(0, 255, 0), DrawMatchesFlags::DEFAULT);
     imshow("RGB Image", outimg1);
+    imwrite( "/home/hao/motion_tracking_design/src/orbtest/src/frame1612_RemoveORB.jpg", outimg1 );
     waitKey(0);
 }
 
 int main(int argc, char** argv){
-    Mat image = imread("/home/hao/motion_tracking_design/src/orbtest/src/frame1299.jpg", 1);
-    Mat mask = imread("/home/hao/motion_tracking_design/src/orbtest/src/frame1299.png");
+    Mat image = imread("/home/hao/motion_tracking_design/src/orbtest/src/frame1612.jpg", 1);
+    Mat mask = imread("/home/hao/motion_tracking_design/src/orbtest/src/frame1612.png");
 
     Mat element;
     element = getStructuringElement(MORPH_RECT, Size(8, 8));

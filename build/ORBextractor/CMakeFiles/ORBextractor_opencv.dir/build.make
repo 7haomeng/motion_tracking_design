@@ -106,13 +106,13 @@ ORBextractor_opencv_EXTERNAL_OBJECTS =
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libmessage_filters.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libroscpp.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /usr/lib/x86_64-linux-gnu/libboost_filesystem.so
-/home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libroscpp_serialization.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libxmlrpcpp.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/librosconsole.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/librosconsole_log4cxx.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/librosconsole_backend_interface.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /usr/lib/x86_64-linux-gnu/liblog4cxx.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /usr/lib/x86_64-linux-gnu/libboost_regex.so
+/home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libroscpp_serialization.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/librostime.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /opt/ros/melodic/lib/libcpp_common.so
 /home/hao/motion_tracking_design/devel/lib/ORBextractor/ORBextractor_opencv: /usr/lib/x86_64-linux-gnu/libboost_system.so

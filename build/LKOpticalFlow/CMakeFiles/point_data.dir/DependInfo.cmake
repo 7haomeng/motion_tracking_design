@@ -53,6 +53,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/include/pcl-1.8"
   "/usr/include/ni"
   "/usr/include/openni2"
+  "/home/hao/motion_tracking_design/devel/include"
   "/opt/ros/melodic/include"
   "/opt/ros/melodic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/opencv"

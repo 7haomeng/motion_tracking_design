@@ -356,6 +356,15 @@ LKOpticalFlow_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/LKOptical
 //Value Computed by CMake
 LKOpticalFlow_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/LKOpticalFlow
 
+//Value Computed by CMake
+LKOpticalFlow_msgs_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/LKOpticalFlow_msgs
+
+//The directory containing a CMake configuration file for LKOpticalFlow_msgs.
+LKOpticalFlow_msgs_DIR:PATH=/home/hao/motion_tracking_design/devel/share/LKOpticalFlow_msgs/cmake
+
+//Value Computed by CMake
+LKOpticalFlow_msgs_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/LKOpticalFlow_msgs
+
 //lsb_release executable was found
 LSB_FOUND:BOOL=TRUE
 
@@ -760,7 +769,7 @@ gtest_main_LIB_DEPENDS:STATIC=general;-lpthread;general;gtest;
 image_transport_DIR:PATH=/opt/ros/melodic/share/image_transport/cmake
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/melodic/lib/libxmlrpcpp.so
+lib:FILEPATH=/opt/ros/melodic/lib/libdynamic_reconfigure_config_init_mutex.so
 
 //The directory containing a CMake configuration file for message_filters.
 message_filters_DIR:PATH=/opt/ros/melodic/share/message_filters/cmake
@@ -893,6 +902,21 @@ view_trajectory_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/view_traj
 
 //The directory containing a CMake configuration file for xmlrpcpp.
 xmlrpcpp_DIR:PATH=/opt/ros/melodic/share/xmlrpcpp/cmake
+
+//Value Computed by CMake
+yolact_ros_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/yolact_ros
+
+//Value Computed by CMake
+yolact_ros_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/yolact_ros
+
+//Value Computed by CMake
+yolact_ros_msgs_BINARY_DIR:STATIC=/home/hao/motion_tracking_design/build/yolact_ros_msgs
+
+//The directory containing a CMake configuration file for yolact_ros_msgs.
+yolact_ros_msgs_DIR:PATH=/home/hao/motion_tracking_design/devel/share/yolact_ros_msgs/cmake
+
+//Value Computed by CMake
+yolact_ros_msgs_SOURCE_DIR:STATIC=/home/hao/motion_tracking_design/src/yolact_ros_msgs
 
 
 ########################
@@ -1048,7 +1072,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=10
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=13
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

@@ -1,0 +1,8 @@
+prefix=/home/hao/motion_tracking_design/devel
+
+Name: yolact_ros_msgs
+Description: Description of yolact_ros_msgs
+Version: 0.1.0
+Cflags: -I/home/hao/motion_tracking_design/devel/include -I/home/hao/motion_tracking_design/src/yolact_ros_msgs/include
+Libs: -L${prefix}/lib 
+Requires: std_msgs message_runtime

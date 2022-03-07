@@ -18,8 +18,11 @@
 #include <geometry_msgs/Vector3.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include "LKOpticalFlow_msgs/Points.h"
 
 #include <message_filters/subscriber.h>
+#include <message_filters/synchronizer.h>
+#include <message_filters/sync_policies/approximate_time.h>
 #include <message_filters/time_synchronizer.h>
 
 #include <pcl_conversions/pcl_conversions.h>
@@ -45,6 +48,10 @@ typedef pcl::PointXYZRGB targetpoint;
 typedef pcl::PointCloud<pcl::PointXYZRGB> TargetPointCloudXYZRGBtoROSMsg;
 typedef pcl::PointCloud<pcl::PointXYZRGB>::Ptr TargetPointCloudXYZRGBtoROSMsgPtr;
 
+// typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::Image> OutlierRemovalSyncPolicy;
+typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image> OutlierRemovalSyncPolicy;
+typedef message_filters::Synchronizer<OutlierRemovalSyncPolicy> OutlierRemovalSynchronizer;
+
 class LK_OpticalFlow
 {
 private:
@@ -52,6 +59,7 @@ private:
     ros::NodeHandle rgb_nh;
 
     cv::Mat frame;
+    cv::Mat raw_frame;
     cv::Mat mask_frame;
     cv::Mat rgb_ptr_frame;
     Mat result;
@@ -74,6 +82,7 @@ private:
     int rows, cols, channels;
     int rgb_rows, rgb_cols, rgb_channels;
     int count = 0;
+    // int time_header;
     double deltaDist;
 
 	float x_op_original;
@@ -109,7 +118,9 @@ private:
 	std_msgs::Float64MultiArray point_data;
 	std_msgs::Float64MultiArray distance_data;
 	std_msgs::Float64MultiArray vel_data;
-	std_msgs::Float64MultiArray tracked_point_data;
+    std_msgs::Header header;
+    LKOpticalFlow_msgs::Points tracked_point_data;
+    
     
     PointCloudXYZRGBPtr cloud_ptr;
     originpoint origin_pointcloud;
@@ -120,8 +131,15 @@ private:
 public:
     LK_OpticalFlow(ros::NodeHandle);
     ~LK_OpticalFlow();
-    void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
-    void image_raw_Callback(const sensor_msgs::ImageConstPtr&);
+    message_filters::Subscriber<sensor_msgs::Image> raw_sub;
+    message_filters::Subscriber<sensor_msgs::Image> img_sub;
+    message_filters::Subscriber<sensor_msgs::Image> mask_sub;
+    boost::shared_ptr<OutlierRemovalSynchronizer> sync;
+
+    // void mask_img_Callback(const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&);
+    void mask_img_Callback(const sensor_msgs::ImageConstPtr&, const sensor_msgs::ImageConstPtr&);
+    // void mask_img_Callback(const sensor_msgs::ImageConstPtr&);
+    // void image_raw_Callback(const sensor_msgs::ImageConstPtr&);
     void Tracking(Mat &, Mat &);
     bool AddNewPoints();
     bool AcceptTrackedPoint(int);
@@ -140,8 +158,10 @@ public:
 	ros::Publisher vel_data_pub;
 	ros::Publisher tracked_point_data_pub;
     ros::Publisher output_image_pub;
-    ros::Publisher output_tstimg_pub;
+    ros::Publisher output_motion_pub;
     ros::Subscriber mask_img_sub;
+
+    // std_msgs::Header header;
 
     // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub;
     // message_filters::Subscriber<sensor_msgs::Image> maskImage_sub;
@@ -154,9 +174,24 @@ public:
 LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 {
     image_transport::ImageTransport it(nh);
+
+    // img_sub.subscribe(nh, "/ESPNet_v2/color/predict_image", 1);
+    // mask_sub.subscribe(nh, "/ESPNet_v2/mask/image", 1);
+
+    raw_sub.subscribe(nh, "/camera/color/image_raw", 1);
+    mask_sub.subscribe(nh, "/yolact_ros/masks/visualization", 1);
+    // mask_sub.subscribe(nh, "/yolact_ros/color/visualization", 1);
+    // img_sub.subscribe(nh, "/yolact_ros/color/visualization", 1);
+    
+    sync.reset(new OutlierRemovalSynchronizer(OutlierRemovalSyncPolicy(220), raw_sub, mask_sub));
+    sync->registerCallback(boost::bind(&LK_OpticalFlow::mask_img_Callback, this, _1, _2));
+    // sync.reset(new OutlierRemovalSynchronizer(OutlierRemovalSyncPolicy(220), mask_sub, img_sub));
+    // sync->registerCallback(boost::bind(&LK_OpticalFlow::mask_img_Callback, this, _1, _2));
+    
+    // mask_img_sub = nh.subscribe("/ESPNet_v2/mask/image", 1, &LK_OpticalFlow::mask_img_Callback,this);
+
     // image_raw_sub = nh.subscribe("/camera/color/image_raw", 1, &LK_OpticalFlow::image_raw_Callback,this);
     // image_raw_sub = nh.subscribe("/ESPNet_v2/predict_img", 1, &LK_OpticalFlow::image_raw_Callback,this);
-    mask_img_sub = nh.subscribe("/ESPNet_v2/mask_img", 1, &LK_OpticalFlow::mask_img_Callback,this);
     // message_filters::Subscriber<sensor_msgs::Image> predictImage_sub(nh, "/ESPNet_v2/predict_img", 1);
     // message_filters::Subscriber<sensor_msgs::Image> maskImage_sub(nh, "/ESPNet_v2/mask_img", 1);
     // message_filters::TimeSynchronizer<sensor_msgs::Image, sensor_msgs::Image> sync(predictImage_sub, maskImage_sub, 10);
@@ -171,12 +206,13 @@ LK_OpticalFlow::LK_OpticalFlow(ros::NodeHandle nh)
 	// point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/point_data", 1);
 	// distance_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/distance_data", 1);
 	// vel_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/vel_data", 1);
-	tracked_point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("lk/tracked_point_data", 1);
+	// tracked_point_data_pub = nh.advertise<std_msgs::Float64MultiArray>("/lk/tracked_point_data", 1);
+    tracked_point_data_pub = nh.advertise<LKOpticalFlow_msgs::Points>("/lk/tracked_point_data", 1);
 
 	// output_image_pub = it.advertise("lk/camera/LK_OpticalFlow_image", 1);
     // output_image_pub = it.advertise("moving_check/camera/semantic_opticalflow_image", 1);
-    output_image_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/semantic_opticalflow_image", 1);
-    output_tstimg_pub = nh.advertise<sensor_msgs::Image>("moving_check/camera/motion_image", 1);
+    output_image_pub = nh.advertise<sensor_msgs::Image>("/moving_check/camera/InstanceSeg_opticalflow_image", 1);
+    output_motion_pub = nh.advertise<sensor_msgs::Image>("/moving_check/camera/motion_image", 1);
 
     //cv::namedWindow(window_name);
 	const int width = 640; // 設定影像尺寸(寬w，高h)
@@ -193,8 +229,18 @@ LK_OpticalFlow::~LK_OpticalFlow()
 {
 }
 
-void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_msg){
+void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& raw_msg, const sensor_msgs::ImageConstPtr& mask_msg){
+// void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_msg, const sensor_msgs::ImageConstPtr& rgb_ptr){
+// void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_msg){
+    // cout << "okokokokok" <<endl;
+    raw_frame = cv_bridge::toCvCopy(raw_msg, "bgr8")->image;
     mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
+    // rgb_ptr_frame = cv_bridge::toCvCopy(rgb_ptr, "bgr8")->image;
+
+    header = raw_msg->header;
+    // time_header = raw_msg->header.stamp.sec;
+    // cout << "time_stamp : " << time_header << endl;
+    // int time_stamp = time_header.header.stamp.secs;
 
     // if(!mask_frame.empty()){
     //     cout << "mask_frame" << endl;
@@ -205,11 +251,13 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     // cout << "**********************************************************" << endl;
     // cout << "Size:" << frame.size() << " " << "Column: " << frame.cols << " " << "Row: " << frame.rows << endl;
 
-    boost::shared_ptr<sensor_msgs::Image const> rgb_ptr;
+    // boost::shared_ptr<sensor_msgs::Image const> rgb_ptr;
     // rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/camera/color/image_raw",rgb_nh);
-    rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/ESPNet_v2/predict_img",rgb_nh);
-    rgb_ptr_frame = cv_bridge::toCvCopy(rgb_ptr, "bgr8")->image;
-    cv::Mat dstImage(rgb_ptr_frame.rows, rgb_ptr_frame.cols, CV_8UC3, cv::Scalar::all(0));
+    // rgb_ptr = ros::topic::waitForMessage<sensor_msgs::Image>("/ESPNet_v2/color/predict_image",rgb_nh);
+    // rgb_ptr_frame = cv_bridge::toCvCopy(rgb_ptr, "bgr8")->image;
+    
+    // cv::Mat dstImage(rgb_ptr_frame.rows, rgb_ptr_frame.cols, CV_8UC3, cv::Scalar::all(0));
+    cv::Mat dstImage(raw_frame.rows, raw_frame.cols, CV_8UC3, cv::Scalar::all(0));
     // dstImage = rgb_ptr_frame.clone();
 
     // cout << "dstImage: " << dstImage << endl;
@@ -225,33 +273,33 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
             mask_index = 640 * i + j;
             mask_label = int(mask_data[j]);
             // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
-            if(mask_label == 1){
-                // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
+            if(mask_label == 255){
+                // mask_label = 1;
+                dstImage.at<Vec3b>(i, j) = raw_frame.at<Vec3b>(i,j);
+                // dstImage.at<Vec3b>(i, j) = rgb_ptr_frame.at<Vec3b>(i,j);
                 // Vec3b rgb_pixel = rgb_ptr_frame.at<Vec3b>(i,j);
                 // Vec3b dstImage_pixel = dstImage.at<Vec3b>(i,j);
                 // dstImage_pixel[0] = rgb_pixel[0];
                 // dstImage_pixel[1] = rgb_pixel[1];
                 // dstImage_pixel[2] = rgb_pixel[2];
-                dstImage.at<Vec3b>(i, j) = rgb_ptr_frame.at<Vec3b>(i,j);
                 // dstImage.at<uchar>(i, j) = 255;
-                // cout << "Label: " << mask_label << "," << "Index: " << mask_index << "," << "Pixel at position (x, y): (" << j << "," << i << ") = " << mask_frame.at<Vec3b>(i,j) << endl;
                 // tmp_index = mask_index;
-                // cout << "tmp_Index: " << tmp_index << endl;
             }
         }
     }
-    // cout << "dstImage: " << dstImage << endl;
-    // cout << "**********************************************" << endl;
-
-    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", dstImage).toImageMsg();
-	output_tstimg_pub.publish(output_tstimage);
     
-    // Tracking(dstImage, result);
-    // if(!dstImage.empty() && !rgb_ptr_frame.empty()){
-    //     Tracking(dstImage, result);
-    // }
+    
+        // cout << raw_frame.size() << "," << mask_frame.size() << "," << dstImage.size() << endl;
+
+        // cout << "dstImage: " << dstImage << endl;
+        // cout << "**********************************************" << endl;
+    
+    output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "bgr8", dstImage).toImageMsg();
+	output_motion_pub.publish(output_tstimage);
+
     try{
         // Tracking(rgb_ptr_frame, result);
+        // Tracking(dstImage, result);
         Tracking(dstImage, result);
     }catch(cv::Exception& e){
         const char* err_msg = e.what();
@@ -259,91 +307,9 @@ void LK_OpticalFlow::mask_img_Callback(const sensor_msgs::ImageConstPtr& mask_ms
     }
 }
 
-// void LK_OpticalFlow::image_raw_Callback(const sensor_msgs::ImageConstPtr& image_msg){
-
-//     //t1 = clock()*0.001;
-//     // cout << "ok" << endl;
-//     cv_ptr = cv_bridge::toCvCopy(image_msg, "bgr8");
-//     frame = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
-//     // mask_frame = cv_bridge::toCvCopy(mask_msg, "8UC1")->image;
-
-//     cv::Mat rgb_dstImage(frame.rows, frame.cols, CV_8UC3, cv::Scalar::all(0));
-//     rgb_dstImage = frame.clone();
-    
-//     rgb_cols = frame.cols;
-//     rgb_rows = frame.rows;
-//     rgb_channels = frame.channels();
-//     // cout << "rgb_dstImage: " << rgb_dstImage << endl;
-//     // cout << "size: " << rgb_dstImage.size() << endl;
-//     // cout << "channel: " << rgb_channels << endl;
-//     // cout << "rgb_tmp_Index: " << tmp_index << endl;
-//     // for (r = 0; r < rgb_rows; r++){
-//     //     for (c = 0; c < rgb_cols; c++){
-//     //         int rgb_index = 640 * r + c;
-//     //         if (rgb_index == tmp_index){
-//                 // Vec3b rgb_pixel = frame.at<Vec3b>(r,c);
-//                 // cout << "rgb_Index: " << rgb_index << "," << "Pixel at position (x, y): (" << c << "," << r << ") = " << frame.at<Vec3b>(r,c) << endl;
-//                 // rgb_dstImage.at<Vec3b>(r, c) = frame.at<Vec3b>(r,c);
-//     //         }
-//     //     }
-//     // }
-//     // cout << "**********************************************" << endl;
-
-//     // output_tstimage = cv_bridge::CvImage(std_msgs::Header(), "8UC3", rgb_dstImage).toImageMsg();
-// 	// output_tstimg_pub.publish(output_tstimage);
-
-
-//     // TODO: wait for pointcloud2 topic
-//     boost::shared_ptr<sensor_msgs::PointCloud2 const> tmp_ptr;
-//     sensor_msgs::PointCloud2 cloud_msg;
-//     tmp_ptr = ros::topic::waitForMessage<sensor_msgs::PointCloud2>("/camera/depth_registered/points", my_nh);
-//     if(tmp_ptr != NULL){
-//         cloud_msg = *tmp_ptr;
-//     }
-
-//     // Convert ROS pointcloud2 topic to PCL pointcloud
-//     // include pcl_conversion.h --> pcl::fromROSMsg(XXXXXXX)
-//     pcl::fromROSMsg(cloud_msg, *cloud_ptr);
-    
-
-//     // test_image_pub.publish(cv_ptr->toImageMsg());
-
-//     // if(!mask_frame.empty()){
-//     //     cout << "mask_frame" << endl;
-//     // }
-
-//     if(!frame.empty())
-//     {
-//         begin_time =ros::Time::now().toSec();
-// 	// t1 = clock()*0.001;
-// 	//t1 = clock();
-//         // Tracking(frame, result);
-//         end_time =ros::Time::now().toSec();
-//         // t2 = clock()*0.001;
-// 	//t2 = clock();
-//         delta_time = end_time-begin_time;
-//         // ROS_INFO("Tracking Time: %f", delta_time);
-
-//         //cout << "ClockDeltaTime : "<< delta_time << "ms" << endl;
-// 		//cout << "FPS : "<< 1 / delta_time * 1000 << endl;
-//         //count=count+1;           
-//     }
-//     else
-//     { 
-//         printf("No captured frame -- Break!\n");
-//         return;
-//     }
-//     int c = waitKey(50);
-//     if( (char)c == 27 )
-//     {
-//         return; 
-//     } 
-// }
-
-
 void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
 {
-    printf( "\033[1;32;1m ************************ Start Tracking ************************\n \033[0m" );
+    // printf( "\033[1;32;1m ************************ Start Tracking ************************\n \033[0m" );
     // cout << "tracking" << endl;
     cvtColor(frame, gray, CV_BGR2GRAY);
     frame.copyTo(output);
@@ -398,15 +364,15 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         if (AcceptTrackedPoint(i))
         {
             EuclideanDis = sqrt(pow((points[0][i].x - points[1][i].x),2) + pow((points[0][i].y - points[1][i].y),2));
-            if (EuclideanDis > 100){ //0 20 50 100
-            // printf("%hhu\n",status[i]);
-            // cout << deltaDist <<endl;
-            initial[k] = initial[i];
-            points[1][k++] = points[1][i];
-            }
-
+            // if (EuclideanDis > 100){ //0 20 50 100
+            // // printf("%hhu\n",status[i]);
+            // // cout << deltaDist <<endl;
             // initial[k] = initial[i];
             // points[1][k++] = points[1][i];
+            // }
+
+            initial[k] = initial[i];
+            points[1][k++] = points[1][i];
         }
         // cout << "k_points[1][" << k++ << "]:" << points[1][k++] << endl;
         // cout <<endl;
@@ -416,7 +382,7 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
     // 顯示特徵點和運動軌跡
     for (size_t i=0; i<points[1].size(); i++)
     {
-        EuclideanDis = sqrt(pow(((float)initial[i].x - (float)initial[i].y),2) + pow(((float)points[1][i].x - (float)points[1][i].y),2));
+        // EuclideanDis = sqrt(pow(((float)initial[i].x - (float)initial[i].y),2) + pow(((float)points[1][i].x - (float)points[1][i].y),2));
         // if (EuclideanDis > 50){
         //     (initial[i].x) = (initial[i].x);
         //     (initial[i].y) = (initial[i].y);
@@ -432,16 +398,19 @@ void LK_OpticalFlow::Tracking(Mat &frame, Mat &output)
         
 		EuDis = EuclideanDistance((float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
 		CityBlockDis = D4Distance((float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
-		printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m \033[1;31m EuclideanDis : %f \033[0m \033[1;34m D4Dis : %f\n \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y, EuDis, CityBlockDis);
+		// printf("\033[1;33m Points pixel [ init_x init_y end_x end_y]: [ %lf %lf %lf %lf ] \033[0m", (float)initial[i].x, (float)initial[i].y, (float)points[1][i].x, (float)points[1][i].y);
 		
-		tracked_point_data.data.push_back((float)initial[i].x);
-		tracked_point_data.data.push_back((float)initial[i].y);
-		tracked_point_data.data.push_back((float)points[1][i].x);
-		tracked_point_data.data.push_back((float)points[1][i].y);
-		tracked_point_data.data.push_back(EuDis);
-		tracked_point_data.data.push_back(CityBlockDis);
+        tracked_point_data.header = header;
+        // tracked_point_data.header.stamp.sec = timestamp;
+        tracked_point_data.point.data.push_back((float)initial[i].x);
+		tracked_point_data.point.data.push_back((float)initial[i].y);
+		tracked_point_data.point.data.push_back((float)points[1][i].x);
+		tracked_point_data.point.data.push_back((float)points[1][i].y);
+		// tracked_point_data.data.push_back(EuDis);
+		// tracked_point_data.data.push_back(CityBlockDis);
+        cout << "Tracked Point : \n" << tracked_point_data << endl;
 		tracked_point_data_pub.publish(tracked_point_data);
-		tracked_point_data.data.clear();
+		tracked_point_data.point.data.clear();
 
 		//cout<< "==================================" << endl;
         //cout << "InitialPoint : " << initial[i] << endl;

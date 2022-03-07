@@ -168,6 +168,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+view_trajectory/CMakeFiles/trajectory_odom.dir/rule:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f CMakeFiles/Makefile2 view_trajectory/CMakeFiles/trajectory_odom.dir/rule
+.PHONY : view_trajectory/CMakeFiles/trajectory_odom.dir/rule
+
+# Convenience name for target.
+trajectory_odom: view_trajectory/CMakeFiles/trajectory_odom.dir/rule
+
+.PHONY : trajectory_odom
+
+# fast build rule for target.
+trajectory_odom/fast:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f view_trajectory/CMakeFiles/trajectory_odom.dir/build.make view_trajectory/CMakeFiles/trajectory_odom.dir/build
+.PHONY : trajectory_odom/fast
+
+# Convenience name for target.
 view_trajectory/CMakeFiles/nav_msgs_generate_messages_eus.dir/rule:
 	cd /home/hao/motion_tracking_design/build && $(MAKE) -f CMakeFiles/Makefile2 view_trajectory/CMakeFiles/nav_msgs_generate_messages_eus.dir/rule
 .PHONY : view_trajectory/CMakeFiles/nav_msgs_generate_messages_eus.dir/rule
@@ -284,6 +299,33 @@ src/trajectory.cpp.s:
 	cd /home/hao/motion_tracking_design/build && $(MAKE) -f view_trajectory/CMakeFiles/trajectory.dir/build.make view_trajectory/CMakeFiles/trajectory.dir/src/trajectory.cpp.s
 .PHONY : src/trajectory.cpp.s
 
+src/trajectory_odom.o: src/trajectory_odom.cpp.o
+
+.PHONY : src/trajectory_odom.o
+
+# target to build an object file
+src/trajectory_odom.cpp.o:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f view_trajectory/CMakeFiles/trajectory_odom.dir/build.make view_trajectory/CMakeFiles/trajectory_odom.dir/src/trajectory_odom.cpp.o
+.PHONY : src/trajectory_odom.cpp.o
+
+src/trajectory_odom.i: src/trajectory_odom.cpp.i
+
+.PHONY : src/trajectory_odom.i
+
+# target to preprocess a source file
+src/trajectory_odom.cpp.i:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f view_trajectory/CMakeFiles/trajectory_odom.dir/build.make view_trajectory/CMakeFiles/trajectory_odom.dir/src/trajectory_odom.cpp.i
+.PHONY : src/trajectory_odom.cpp.i
+
+src/trajectory_odom.s: src/trajectory_odom.cpp.s
+
+.PHONY : src/trajectory_odom.s
+
+# target to generate assembly for a file
+src/trajectory_odom.cpp.s:
+	cd /home/hao/motion_tracking_design/build && $(MAKE) -f view_trajectory/CMakeFiles/trajectory_odom.dir/build.make view_trajectory/CMakeFiles/trajectory_odom.dir/src/trajectory_odom.cpp.s
+.PHONY : src/trajectory_odom.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -296,6 +338,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... install/local"
 	@echo "... test"
+	@echo "... trajectory_odom"
 	@echo "... nav_msgs_generate_messages_eus"
 	@echo "... list_install_components"
 	@echo "... nav_msgs_generate_messages_nodejs"
@@ -306,6 +349,9 @@ help:
 	@echo "... src/trajectory.o"
 	@echo "... src/trajectory.i"
 	@echo "... src/trajectory.s"
+	@echo "... src/trajectory_odom.o"
+	@echo "... src/trajectory_odom.i"
+	@echo "... src/trajectory_odom.s"
 .PHONY : help
 
 

@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   # pcl_conversions
   # pcl_ros
   message_filters
+  LKOpticalFlow_msgs
 )
 
 find_package(Boost REQUIRED)
